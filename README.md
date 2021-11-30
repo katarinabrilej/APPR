@@ -4,8 +4,9 @@ Vzorčni repozitorij za projekt pri predmetu APPR v študijskem letu 2021/22.
 
 ## Analiza izseljevanja in priseljevanja v Evropskih državah.
 
-Izbrali si boste temo, s katero se bo vaš projekt ukvarjal.
-Tukaj boste napisali, kje ste dobili podatke, ter kakšen je vaš cilj.
+Analiziral bom gibanje prebivalstva v Evropskih državah v odvisnosti od različnih socialnih, ekonomskih in izobraževalnih vplivov. Analiziral bom posebaj izseljevanje in priseljevanje, ter probal ugotoviti vzroke obeh. Napovedal bom selitvene trende v Evropskih državah v bližnji prihodnosti. Večino podatkov sem dobil na [linked phrase](https://ec.europa.eu/eurostat/web/main/data/database?p_p_id=NavTreeportletprod_WAR_NavTreeportletprod_INSTANCE_nPqeVbPXRmWQ&p_p_lifecycle=0&p_p_state=normal&p_p_mode=view)
+ Za ta namen bom uporabil tri tabele.
+*italic* 1. tabela: Izseljevanje in priseljevanje _italic_
 
 ## Program
 
