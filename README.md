@@ -8,23 +8,23 @@ Analiziral bom gibanje prebivalstva v Evropskih državah v odvisnosti od različ
  Za ta namen bom uporabil tri tabele.
  
 *1. tabela:* **Migracijski tokovi**
-    * države (character)
-    * BDP države na prebivalca (double)
-    * število prebivalcev na km^2 (double)
-    * leto (integer)
-    * spol (character)
-    * izseljevanje (double)
-    * priseljevanje (double)
+* države (character)
+* BDP države na prebivalca (double)
+* število prebivalcev na km^2 (double)
+* leto (integer)
+* spol (character)
+* izseljevanje (double)
+* priseljevanje (double)
 
 *2. tabela:* **Izseljevanje**
-    * država (character)
-    * spol (character)
-    * leto (integer)
-    * stopnja izobrazbe (character)
-    * število poučevanih tujih jezikov na učenca (double)
-    * zločin (character)
-    * število zločinov (double)
-    * zaposljivost mladih (double)
+* država (character)
+* spol (character)
+* leto (integer)
+* stopnja izobrazbe (character)
+* število poučevanih tujih jezikov na učenca (double)
+* zločin (character)
+* število zločinov (double)
+* zaposljivost mladih (double)
 
 *3. tabela:*  **Priseljevanje**
 * država (character)
