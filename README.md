@@ -27,7 +27,7 @@ Analiziral bom gibanje prebivalstva v Evropskih državah v odvisnosti od različ
     * zaposljivost mladih (double)
 
 *3. tabela:* **Priseljevanje**
-    * država (character)
+    "* država (character)"
     * spol (character)
     * leto (integer)
     * stopnja izobrazbe (character)
