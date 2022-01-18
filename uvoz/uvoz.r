@@ -2,6 +2,8 @@
 
 library("readxl")
 library("dplyr")
+library(tidyverse)
+
 
 # Definiranje encodinga
 loc = locale(
@@ -36,7 +38,7 @@ oznake_regij = c(
 
 # Branje podatkov o brezposelnosti po regijah - izpustim stolpec "MERITVE"
 brezposelnost_po_regijah = read_csv(
-  "stopnje_brezposelnosti_po_regijah.csv", 
+  "podatki/stopnje_brezposelnosti_po_regijah.csv", 
   col_names=TRUE, 
   locale = loc,
   col_types = cols(
@@ -47,7 +49,7 @@ brezposelnost_po_regijah = read_csv(
 
 # Branje podatkov o brezposelnosti po regijah
 bdp_po_regijah = read_csv(
-  "bdp_po_regijah.csv",
+  "podatki/bdp_po_regijah.csv",
   col_names = TRUE,
   locale = loc,
   col_types = cols(
@@ -59,7 +61,7 @@ bdp_po_regijah = read_csv(
 
 # Branje podatkov o trajanju bolniškega staleža - izpustim stolpec "Tip podatka"
 kazalniki_bolniskega_staleza = read_excel(
-  "kazalniki_bolniškega_staleža_po_statističnih_regijah_in_spolu.xlsx",
+  "podatki/kazalniki_bolniškega_staleža_po_statističnih_regijah_in_spolu.xlsx",
   col_names = TRUE,
   col_types = c(
     "guess", "guess", "guess", "skip", 
@@ -99,14 +101,31 @@ transformiraj_regije <- function(regije) {
   return (regije)
 }
 
-preimenuj_letnice_v_tabeli <- function(df, dodana_pripona) {
+zlepi_dve_imeni_z_podcrtajem <- function(ime1, ime2) {
+  return (paste(ime1, ime2, sep="_"))
+}
+
+ustvari_nova_imena_letnic_v_tabeli <- function(df, dodana_pripona) {
   imena_stolpev = colnames(df)
-  zacetni_indeks_preimenovanja = match("2008", imena_stolpev)
+  zacetno_leto = "2008"
+  zacetni_indeks_preimenovanja = match(zacetno_leto, imena_stolpev)
   for (k in zacetni_indeks_preimenovanja:length(imena_stolpev)) {
-    imena_stolpev[k] = paste(imena_stolpev[k], dodana_pripona, sep="_")
+    imena_stolpev[k] = zlepi_dve_imeni_z_podcrtajem(imena_stolpev[k], dodana_pripona)
   }
-  colnames(df) = imena_stolpev
+  return (imena_stolpev)
+}
+
+preimenuj_letnice_v_tabeli <- function(df, dodana_pripona) {
+  colnames(df) = ustvari_nova_imena_letnic_v_tabeli(df, dodana_pripona)
   return (df)
+}
+
+dobi_imena_novih_letnic <- function(df, dodana_pripona) {
+  imena_stolpcev = colnames(df)
+  zacetno_leto = "2008"
+  ime_stolpca_zacetnega_leta = zlepi_dve_imeni_z_podcrtajem(zacetno_leto, dodana_pripona)
+  zacetni_indeks = match(ime_stolpca_zacetnega_leta, imena_stolpcev)
+  return (imena_stolpcev[-1: -(zacetni_indeks-1)])
 }
 
 transformiraj_kazalnike_bolniskega_staleza <- function(
@@ -151,6 +170,23 @@ transformiraj_brezposelnost_in_bdp_tabeli <- function(df, pripona) {
   return (df)
 }
 
+pofiltriraj_po_spolu <- function(kazalniki_bolniskega_staleza, oznaka_spola) {
+  # Pofiltrira tabelo kazalniki_bolniskega_staleza tako, da
+  # so po tem prikazani zgolj podatki o moskih
+  # ozaka_spola bo zasedala 2 vrednosti --> "m" ali "f"
+  kazalniki_bolniskega_staleza %>% filter(Spol == oznaka_spola)
+}
+
+dobi_ime_csv_datoteke <- function(ime_datoteke) {
+  return (paste(paste("uvoz", ime_datoteke, sep="/"), "csv", sep="."))
+}
+
+zapisi_v_csv <- function(df, ime_datoteke) {
+  # Zapise tabelo "df" v csv datoteko z imenom "ime_datoteke" znotraj folderja "uvoz/"
+  ime_csv_datoteke = dobi_ime_csv_datoteke(ime_datoteke)
+  df %>% write_csv(ime_csv_datoteke)
+}
+
 kazalniki_bolniskega_staleza = transformiraj_kazalnike_bolniskega_staleza(
   kazalniki_bolniskega_staleza
 )
@@ -160,11 +196,23 @@ brezposelnost_po_regijah = transformiraj_brezposelnost_in_bdp_tabeli(
 )
 
 bdp_po_regijah = transformiraj_brezposelnost_in_bdp_tabeli(
-  bdp_po_regijah, "brezposelnost"
+  bdp_po_regijah, "bdp"
 )
 
+kazalniki_bolniskega_staleza_moski = pofiltriraj_po_spolu(
+  kazalniki_bolniskega_staleza, "m"
+)
 
+kazalniki_bolniskega_staleza_zenske = pofiltriraj_po_spolu(
+  kazalniki_bolniskega_staleza, "f"
+)
 
-
-
+# Zapisovanje podatkov v csv datoteko.
+# Za to si pomagam z zgoraj definirano helper funkcijo "zapisi_v_csv" (ki si spet
+# pomaga z zgoraj definirano funkcijo "dobi_ime_csv_datoteke"
+# vse to shranim v folder "uvoz/"
+zapisi_v_csv(brezposelnost_po_regijah, "brezposelnost_po_regijah")
+zapisi_v_csv(bdp_po_regijah, "bdp_po_regijah")
+zapisi_v_csv(kazalniki_bolniskega_staleza_moski, "kazalniki_bolniskega_staleza_moski")
+zapisi_v_csv(kazalniki_bolniskega_staleza_zenske, "kazalniki_bolniskega_staleza_zenske")
 
