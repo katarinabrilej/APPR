@@ -1,12 +1,6 @@
 # 4. faza: Napredna analiza podatkov
 
-library(sp)
-library(rgdal) # funkcija readOGR
-library(raster) # funkcija crop
-library(rgeos) # funkcija gBuffer
-library(tidyverse)
-library(cluster)
-library(ggalt)
+source("lib/libraries.r")
 
 # Uvoz podatkov
 
@@ -84,19 +78,15 @@ izrisi_figuro_clusteringa <- function(podatki_za_clustering_zemljevid) {
 }
 
 clustering_po_bolniskem_stalezu <- function() {
+  
   # Vrne zemljevid Slovenije, kjer so zgručene posamične regije glede na trajanje
   # bolniškega staleža od leta 2008 do leta 2012
   kazalniki_bolniskega_staleza_normalizirani = pripravi_podatke_za_kmeans_analizo(kazalniki_bolniskega_staleza_zenske)
-  kmeans_rezultat = kmeans_metoda(kazalniki_bolniskega_staleza_normalizirani, 5, 1000)
+  kmeans_rezultat = kmeans_metoda(kazalniki_bolniskega_staleza_normalizirani, 3, 1000)
   podatki_za_clustering_zemljevid = pridobi_podatke_za_clustering_zemljevid(kmeans_rezultat)
   zemljevid = izrisi_figuro_clusteringa(podatki_za_clustering_zemljevid)
+  return(zemljevid)
 }
 
-
-
-
-
-
-
-
-
+# Končni rezultat clusteringa (zemljevid, ki pogrupira najbolj zdrave regije)
+rezultat_clusteringa <- clustering_po_bolniskem_stalezu()

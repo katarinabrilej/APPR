@@ -1,11 +1,6 @@
 # 3. faza: Vizualizacija podatkov
 
-library(sp)
-library(rgdal)
-library(raster) # funkcija crop
-library(rgeos) # funkcija gBuffer
-library(tidyverse)
-
+source("lib/libraries.r")
 
 # Uvoz podatkov
 
@@ -72,12 +67,11 @@ ustvari_graf1 <- function() {
   mapping2016 = aes(x = Regija, y = stalez_2016)
   mapping2020 = aes(x = Regija, y = stalez_2020)
   
-  graf1 = grid.arrange(
+  return (grid.arrange(
     arrangeGrob(ustvari_komponento_grafa1(mapping2008), ustvari_komponento_grafa1(mapping2012), ncol=2),
     arrangeGrob(ustvari_komponento_grafa1(mapping2016), ustvari_komponento_grafa1(mapping2020), ncol=2),
-    nrow = 3
-  )
-  return(graf1)
+    nrow = 2
+  ))
 }
 
 
@@ -192,3 +186,9 @@ ustvari_graf3 <- function() {
   nrow=1)
   )
 }
+
+# Definicija grafov 1, 2 in 3
+
+g1 = ustvari_graf1()
+g2 = ustvari_graf2()
+g3 = ustvari_graf3()

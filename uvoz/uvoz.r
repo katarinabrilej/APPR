@@ -1,9 +1,6 @@
 # 2. faza: Uvoz podatkov
 
-library("readxl")
-library("dplyr")
-library(tidyverse)
-zapisi_podatke = FALSE
+source("lib/libraries.r")
 
 
 # Definiranje encodinga
@@ -268,6 +265,7 @@ kazalniki_bolniskega_staleza_moski = pofiltriraj_po_spolu(
   kazalniki_bolniskega_staleza, "m"
 )
 
+
 kazalniki_bolniskega_staleza_zenske = pofiltriraj_po_spolu(
   kazalniki_bolniskega_staleza, "z"
 )
@@ -276,6 +274,8 @@ kazalniki_bolniskega_staleza_zenske = pofiltriraj_po_spolu(
 # Za to si pomagam z zgoraj definirano helper funkcijo "zapisi_v_csv" (ki si spet
 # pomaga z zgoraj definirano funkcijo "dobi_ime_csv_datoteke"
 # vse to shranim v folder "uvoz/"
+
+# Po potrebi ponovnega shranjevanja: Odkomentirajte spodnje vrstice kode
 
 # zapisi_v_csv(brezposelnost_po_regijah, "brezposelnost_po_regijah")
 # zapisi_v_csv(bdp_po_regijah, "bdp_po_regijah")
