@@ -7,6 +7,16 @@ library(shiny)
 library(readr)
 library(dplyr)
 library(tibble)
+library(sp)
+library(rgdal)
+library(raster) # funkcija crop
+library(rgeos) # funkcija gBuffer
+library(tidyverse)
+library(cluster)
+library(ggalt)
+library(readxl)
+
+
 
 options(gsubfn.engine="R")
 
