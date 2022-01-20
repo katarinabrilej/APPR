@@ -1,6 +1,6 @@
 ---
-title: "Poročilo pri predmetu Analiza podatkov s programom R"
-author: "Študent FMF"
+title: "Analiza vpliva makroekonomskih kazalcev na trajanje bolniškega staleža v Sloveniji"
+author: "Tjaž Eržen"
 output:
   html_document: default
   pdf_document:
@@ -20,6 +20,27 @@ source("lib/libraries.r", encoding="UTF-8")
 
 ## Izbira teme
 
+Ne-manjkanje zaradi pritiska po oddajanju fakultetne domače naloge (ter zbolevanju
+po oddaji le-te) me je motiviralo, če to velja v splošnem - ali ljudje zaradi 
+"mid-to-short term" pritiskov začasno manj časa preživijo na bolniški v zameno
+za slabše dolgoročno zdravje?
+
+Zato sem za projekt za predmet Analiza podatkov s programom R analiziral trajanje
+bolniškega staleža po regijah skozi leta. Ker se mi je zanimivo zdelo, kako se 
+podatki o bolniškem staležu spreminjajo tudi glede na spola, sem podatke razdelil
+še na to.
+
+Gnala me je zgornja misel - ali je bolniški stalež v Sloveniji nižji zaradi 
+slabe gospodarkse rasti? Ali so bili ljudje leta, npr. 2010, pod večjih ekonomskim
+pritiskom ter niso želeli manjkati v službi zaradi bolniške, kot pa denimo, v 
+letu 2018 (lahko zaradi manjšega pritiska, ali pa tudi zaradi kroničnih bolezni,
+ki se pojavijo ob delu, ko si telo zasluži počitek)? Ali sta podateka o številu
+dni, ki jih posameznik preboli ter o recimo BDP-ju povezana? Jasno je, da so tudi
+nekatere občine bolj zdrave od drugih. Bi lahko nekatere občine zgručili (tj.,
+delali clustering) ter dobili smiselne rezultate? Kateri spol več dni preboli?
+Vsem zgoraj naštetim vprašanjem sem se posvetil v svoji raziskovalni nalogi ter
+poskušal odgovoriti nanje.
+
 ***
 
 ## Obdelava, uvoz in čiščenje podatkov
@@ -27,6 +48,32 @@ source("lib/libraries.r", encoding="UTF-8")
 ```{r uvoz}
 source("uvoz/uvoz.r", encoding="UTF-8")
 ```
+
+Podatke sem uvažal iz podatkovne baze [SURS](https://pxweb.stat.si/SiStat/sl)
+(tabela `bdp_po_regjiah.csv` ter `stopnje_brezposelnosti_po_regijah.csv`)
+ter iz [NJIZ](https://nijz.si/sl/podatki) (tabela `kazalniki_bolniskega_staleza_po_statisticnih_regijah_in_spolu.xlsx`). 
+Podatke in SURS-a sem uvozil v formatu CSV, podatke iz NJIZ-ja pa (za razbitje monotonosti :D) v excelovem XLSX formatu.
+Vse podatkovne tabele sem nato prečistil ter spravil v obliko primerno za nadaljno analizo.
+Surovi podatki so shranjeni v folderju podatki, prečiščeni ter urejeni podatki pa 
+v folderju uvoz.
+
+1. **bdp_po_regijah** - Vsebuje podatke o rasti BDP-ja po statističnih regijah. Tu sem črpal podatke za svoj glavni makroekonomski kazalec.
+- `regija` - regija popisa podatkov
+- `meritve` - podatka nisem uporabljal
+- Ostali stolpci predstavljajo podatke o BDP-ju po regijah v letih 2008-2020.
+
+2. **kazalniki_bolniskega_staleza_po_statisticnih_regijah_in_spolu** - Vsebuje podatke o bolniškem staležu po statističnih regijah in spolu.
+Iz te tabele sem črpal največ podatkovnih analiz.
+- `regija` - ime regije
+- `spol` - spol
+- Ostali stolpci predstavljajo podatke o trajanju bolniškega staleža po regijah v letih 2008-2020.
+
+3. **stopnje_brezposelnosti_po_regijah** - Vsebuje podatke o stopnjah brezposelnosti po statističnih regijah. Tu sem črpal podadtke o "pritisku na zaposlenega".
+Če je stopnja brezposelnosti v neki regiji visoka, to verjetno pomeni, da bo šel
+posameznik manj verjetno na bolniško ter tako skrajšal povprečni bolniški stalež regiji. Tabela vsebuje.
+- `regija` - ime regije
+- `stopnja brezposelnosti` - Stopnja brezposelnosti za doloceno leto ter regijo
+- Ostali stolpci predstavljajo stopnjo brezposelnosti po regijah v letih 2008-2020.
 
 ***
 
@@ -36,6 +83,79 @@ source("uvoz/uvoz.r", encoding="UTF-8")
 source("vizualizacija/vizualizacija.r", encoding="UTF-8")
 ```
 
+
+```{r, fig.align='center'}
+ustvari_graf1() # znotraj vizualizacija/vizualizacija.r definiram funcijo ki ustvari graf 1
+```
+
+Da dobim pregled nad bolniškim staležem skozi leta, sem za začetek skiciral
+trajanje bolniškega staleža v spodaj navedenih letih. Vsako izmed leto ima svoj ekonomski ter družbeni pomen:
+- 2008 - začetek gospodarske krize
+- 2012 - dno gospodarske krize
+- 2016 - solidno ekonomsko okrevanje
+- 2020 - Začetek pandemije Covid-19
+
+Vsak graf sestavljata regionalna komponenta na x osi ter trajanje staleža na y osi. 
+Tukaj sem podatke dodatno ločil še na spol - vsak element znotraj grafa ima dve točki:
+- Spodnja točka ponazarja število dni, ki so jih na bolniški preživeli moški
+- Zgornja točka ponazarja število dni, ki so jih na bolniški preživele ženske
+
+Za večino regij vidimo tole: Leta 2008 ter 2012 je bilo manj dni na bolniški
+kot leta 2016 ter 2020 - sklepam, da zaradi kronočnih bolezni, ki so posledica
+večjega pritiska v letih 2008 ter 2012. Dodatno je leta 2020 povprečno trajanje bolniške
+dvignil covid.
+
+Očitna je še ena stvar: Moški so na bolniški precej manj kot ženske.
+
+Gibanju bolniškega staleža skozi leta ter po spolih se podrobneje posvetim.
+
+Pa še zadnje "očitno" opažanje: Nekatere regije so (bistveno) bolj zdrave kot 
+druge. Znano je, da se zdravje regij večinoma deli na tri dele:
+- Zahodna Slovenija (najbolj zdrava populacija)
+- Osrednja Slovenija (srednje zdrava populacija)
+- Vzhodna regija (najmanj zdrav del Slovenije)
+
+Zato bom to hipotezo testiral v nadaljevanju testiral z metodo gručenja s tremi
+skupinami. Rezultati so spodaj.
+
+Kakorkoli, dovolj govorjenja. V naslednjem grafu bom probal ugotoviti, kako
+se stalež spreminja skozi leta. Ker je podatkov preveč ter ni morem vizualizirati
+vseh, sem se odločil za dve leti: 
+- 2010: obdobje ekonomskega pritiska
+- 2018: ekonomski vrhunec Slovenije (vrhunec :D)
+
+
+```{r, fig.align='center'}
+ustvari_graf2() # znotraj vizualizacija/vizualizacija.r definiram funcijo ki ustvari graf 2
+```
+
+Vidimo, da je leta 2018 po regijah precej višji - Koroška ter Posavska regija
+leta 2018 denimo celo presežeta 20 delovnih dni! (vsak 13. delovni dan prebolen),
+medtem ko je ta številka 8 let prej za 6 dni nižja (vsak 19. delovni dan prebolen).
+To ni izjema za zgolj te leti. Ob analizi katerega koli leta z ekonomskim nemirom
+ter katerega koli leta "blaginje" dobim isti rezultat. Prav tako rezultat ni
+vezan zgolj na Koroško ter Posavsko regijo - v bistvu je ni regije, ki bi imela
+leta 2010 omembe vredno več dni prebolenih kot v letu 2018. Hipoteza, da ekonomsko
+stanje vpliva na trajanje bolniškega staleža torej velja. Naj omenim še, da
+so tudi tukaj vidne razlike v zdravju med regijami (v obeh letih)
+
+V tretjem ter zadnjem grafu si ogledam še razliko med spoloma. Kot vzorčno leto
+si spet izberem leto 2010. V ostalih letih so razlike podobne.
+
+Zemljevid na desni predstavlja bolniški stalež moških, zemljevid na levi
+pa bolniški stalež žensk.
+
+```{r, fig.align='center'}
+ustvari_graf3() # znotraj vizualizacija/vizualizacija.r definiram funcijo ki ustvari graf 3
+```
+
+Skoraj da ni primerjave - najbolj "nezdrava" regija moških (Pomurska, Primorsko-Notranjska,
+Savinjska) imajo toliko dni off kot najbolj zdrava regija žensk za ta primer (Osrednjeslovenska
+ter Gorenjska regija). Tudi začetna hipoteza o razliki staleža med spoloma torej
+drži. Naj spet prav tako povdarim razliko med posameznimi regijami, tako za ženske kot
+za moške.
+
+
 ***
 
 ## Napredna analiza podatkov
@@ -44,8 +164,29 @@ source("vizualizacija/vizualizacija.r", encoding="UTF-8")
 source("analiza/analiza.r", encoding="UTF-8")
 ```
 
+Za konec sem si zadal tole nalogo: Ali res lahko zgručimo nekaj posameznih regij
+glede na zdravje (če vzamem število dni na bolniški kot neko mero zdravja)?
+Ker je moja hipoteza, da bomo imeli tako delitev:
+- Zahodna Slovenija
+- Osrednja Slovenija
+- Vzhodna regija
+bom pri clusteringu nastavil število skupin na 3. Spodaj prilagam rešitev:
+
+```{r, fig.align='center'}
+clustering_po_bolniskem_stalezu()
+```
+
+Tudi to drži, ravno tako, kot je opisano zgoraj. Težko bi našemu problemu
+našli boljšo metodo strojnega učenja kot je ena metoda iz družine algoritmov gručenja.
+
 ***
 
-```{r shiny}
-#shinyAppDir("shiny", options=list(width="100%", height=600))
-```
+## Zaključek
+
+Kot vidimo, lahko vidimo razliko v bolniškem staležu glede na:
+- Ekonomski cikel
+- Spol
+- Regijo
+Vse hipoteze, postavljene na začetku projekta so potrjene.
+
+***
