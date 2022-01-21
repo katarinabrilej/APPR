@@ -56,17 +56,15 @@ bdp_po_regijah = read_csv(
   )
 )
 
-
 # Branje podatkov o trajanju bolniškega staleža - izpustim stolpec "Tip podatka"
 kazalniki_bolniskega_staleza = read_excel(
-  "podatki/kazalniki_bolniškega_staleža_po_statističnih_regijah_in_spolu.xlsx",
+  "podatki/kazalniki_bolniskega_staleza_po_statisticnih_regijah_in_spolu.xlsx",
   col_names = TRUE,
   col_types = c(
     "guess", "guess", "guess", "skip", 
     "guess", "guess", "guess", "guess", "guess", "guess", "guess", 
     "guess", "guess", "guess", "guess", "guess", "guess")
-  )
-
+)
 
 dopolni_stolpec_spol <- function(spol) {
   # Ker je tabela razdeljena glede na spol, vrednost atributa spol izgleda takole:
