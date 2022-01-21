@@ -15,6 +15,7 @@ library(tidyverse)
 library(cluster)
 library(ggalt)
 library(readxl)
+library(gridExtra)
 
 
 
