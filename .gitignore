@@ -81,7 +81,6 @@ Rplots.tex
 js
 tmp-pdfcrop-*.tex
 logs/
-zemljevidi/
 .bash*
 .cargo/
 .conda/
