@@ -6,20 +6,20 @@ library(digest)
 
 #Uvoz zemljevida
 
-#zemljevid <- uvozi.zemljevid("http://biogeo.ucdavis.edu/data/gadm2.8/shp/SVN_adm_shp.zip","SVN_adm1", encoding = "UTF-8")
-#zemljevid$NAME_1 <- c("Gorenjska", "Goriška","Jugovzhodna Slovenija", "Koroška", "Primorsko-notranjska", "Obalno-kraška", 
- #                    "Osrednjeslovenska", "Podravska", "Pomurska", "Savinjska", "Posavska", "Zasavska")
+zemljevid <- uvozi.zemljevid("http://biogeo.ucdavis.edu/data/gadm2.8/shp/SVN_adm_shp.zip","SVN_adm1", encoding = "UTF-8")
+zemljevid$NAME_1 <- c("Gorenjska", "Goriška","Jugovzhodna Slovenija", "Koroška", "Primorsko-notranjska", "Obalno-kraška", 
+                     "Osrednjeslovenska", "Podravska", "Pomurska", "Savinjska", "Posavska", "Zasavska")
 
 
 #1.zemljevid: priseljevanje prebivalstva po regijah
 
-#regije_pri <- medregijske %>% group_by(regijapri) %>% summarise(skupaj = sum(stevilo, na.rm = TRUE ))
-#regije_pri$regijapri = regije_pri$regijapri %>% trimws()
+regije_pri <- medregijske %>% group_by(regijapri) %>% summarise(skupaj = sum(stevilo, na.rm = TRUE ))
+regije_pri$regijapri = regije_pri$regijapri %>% trimws()
 
-#podatki_pri = merge(zemljevid, regije_pri, by.x = "NAME_1", by.y = "regijapri" )
-#tm_shape(podatki_pri) +
-#  tm_polygons("skupaj") + 
-#  tm_format("NLD", title="Število prebivalstva, ki se je priselilo iz določene regije", bg.color="white")
+podatki_pri = merge(zemljevid, regije_pri, by.x = "NAME_1", by.y = "regijapri" )
+tm_shape(podatki_pri) +
+  tm_polygons("skupaj") + 
+  tm_format("NLD", title="Število prebivalstva, ki se je priselilo iz določene regije", bg.color="white")
 
 
 #2. zemljevid: izseljevanje prebivalstva po regijah

@@ -7,7 +7,12 @@ library(shiny)
 library(readr)
 library(dplyr)
 library(tibble)
-
+library(readxl)
+library(tidyr)
+library(ggplot2)
+library(tidyverse)
+library(lemon)
+options(gsubfn.engine="R")
 options(gsubfn.engine="R")
 
 # Uvozimo funkcije za pobiranje in uvoz zemljevida.
