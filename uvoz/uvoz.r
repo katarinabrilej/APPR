@@ -31,7 +31,6 @@ names(medregijske)[3] <- "regijapri"
 names(medregijske)[4] <- "stevilo"
 
 
-
 #2. Meddržavne selitve glede na spol in vrsto selitve (priseljevanje ali izseljevanje)
 
 meddrzavne <- read_csv2("podatki/meddrzavne_spol.csv",locale=locale(encoding="Windows-1250"), skip = 2, na=c("", "...")) %>%
@@ -47,6 +46,7 @@ names(meddrzavne)[5] <- "stevilo"
 
 
 #3. Priseljenci glede na namen in državo predhodnega bivališča
+
 namen_priseljevanja <- read_csv2("podatki/priseljeni_namen.csv",locale=locale(encoding="Windows-1250"), skip = 2, na=c("", "...", "z") )%>%
   rename(drzava= "DRZAVA DRŽAVLJANSTVA") %>%
   gather(key="leto.namen", value="stevilo", -drzava) %>%
@@ -57,8 +57,6 @@ names(namen_priseljevanja)[2] <- "leto"
 names(namen_priseljevanja)[3] <- "namen"
 names(namen_priseljevanja)[4] <- "stevilo"
 
-#filter(drzava != 'Srbija', drzava != 'Črna Gora')
-#namen_priseljevanja <- namen_priseljevanja
 
 #4. Priseljenci glede na izobrazbo in državo predhodnega bivališča
 
@@ -87,6 +85,13 @@ names(izobrazba_izseljeni)[3] <- "leto"
 names(izobrazba_izseljeni)[4] <- "izobrazba"
 names(izobrazba_izseljeni)[5] <- "stevilo"
 
+vec <- c(1,1,1,2,2,2,2,3,3,3,3)
+izobrazba_izseljeni <- cbind(izobrazba_izseljeni, vec)
+
+test5a <- izobrazba_izseljeni %>% group_by(vec, leto, spol) %>% summarise(skupaj = sum(stevilo, na.rm = TRUE ))
+test5 <- izobrazba_izseljeni %>% group_by(vec, leto, izobrazba) %>% summarise(skupaj = sum(stevilo, na.rm = TRUE ))
+
+#preimenovati vec
 
 
 #6.Izseljenci glede na status aktivnosti in državo prihodnjega bivališča

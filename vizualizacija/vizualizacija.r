@@ -2,34 +2,36 @@
 
 
 library(tmap)
+library(digest)
 
 #Uvoz zemljevida
 
-zemljevid <- uvozi.zemljevid("http://biogeo.ucdavis.edu/data/gadm2.8/shp/SVN_adm_shp.zip","SVN_adm1", encoding = "UTF-8")
-zemljevid$NAME_1 <- c("Gorenjska", "Goriška","Jugovzhodna Slovenija", "Koroška", "Primorsko-notranjska", "Obalno-kraška", 
-                      "Osrednjeslovenska", "Podravska", "Pomurska", "Savinjska", "Posavska", "Zasavska")
+#zemljevid <- uvozi.zemljevid("http://biogeo.ucdavis.edu/data/gadm2.8/shp/SVN_adm_shp.zip","SVN_adm1", encoding = "UTF-8")
+#zemljevid$NAME_1 <- c("Gorenjska", "Goriška","Jugovzhodna Slovenija", "Koroška", "Primorsko-notranjska", "Obalno-kraška", 
+ #                    "Osrednjeslovenska", "Podravska", "Pomurska", "Savinjska", "Posavska", "Zasavska")
 
 
-# 1.zemljevid: priseljevanje prebivalstva po regijah
-regije_pri <- medregijske %>% group_by(regijapri) %>% summarise(skupaj = sum(stevilo, na.rm = TRUE ))
-regije_pri$regijapri = regije_pri$regijapri %>% trimws()
+#1.zemljevid: priseljevanje prebivalstva po regijah
 
-podatki_pri = merge(zemljevid, regije_pri, by.x = "NAME_1", by.y = "regijapri" )
-tm_shape(podatki_pri) +
-  tm_polygons("skupaj") + 
-  tm_format("NLD", title="Število prebivalstva, ki se je priselilo iz določene regije", bg.color="white")
+#regije_pri <- medregijske %>% group_by(regijapri) %>% summarise(skupaj = sum(stevilo, na.rm = TRUE ))
+#regije_pri$regijapri = regije_pri$regijapri %>% trimws()
+
+#podatki_pri = merge(zemljevid, regije_pri, by.x = "NAME_1", by.y = "regijapri" )
+#tm_shape(podatki_pri) +
+#  tm_polygons("skupaj") + 
+#  tm_format("NLD", title="Število prebivalstva, ki se je priselilo iz določene regije", bg.color="white")
 
 
 #2. zemljevid: izseljevanje prebivalstva po regijah
-regije_izs <- medregijske %>% group_by(regijaiz) %>% summarise(skupaj = sum(stevilo, na.rm = TRUE ))
-regije_izs$regijaiz = regije_izs$regijaiz %>% trimws()
+#regije_izs <- medregijske %>% group_by(regijaiz) %>% summarise(skupaj = sum(stevilo, na.rm = TRUE ))
+#regije_izs$regijaiz = regije_izs$regijaiz %>% trimws()
 
-podatki_izs = merge(zemljevid, regije_izs, by.x = "NAME_1", by.y = "regijaiz" )
-tm_shape(podatki_izs) +
-  tm_polygons("skupaj") +
-  tm_format("NLD", title="Število prebivalstva, ki se je izselilo iz določene regije", bg.color="white")
+#podatki_izs = merge(zemljevid, regije_izs, by.x = "NAME_1", by.y = "regijaiz" )
+#tm_shape(podatki_izs) +
+ # tm_polygons("skupaj") +
+  #tm_format("NLD", title="Število prebivalstva, ki se je izselilo iz določene regije", bg.color="white")
 
-#ŠE LEGENDO UREDIT!
+
 
 #Graf 1: Povprečno število prebivalstva, ki se je selilo glede na statistične regije Slovenije
 
@@ -59,12 +61,6 @@ graf2 <- ggplot(data=povprecje2, aes(x=drzava, y=povprecje, fill=`vrsta`)) +
   theme_dark() +
   scale_fill_brewer(palette = "BrBG")
 
-#odseljeni<- meddrzavne %>% filter( vrsta != "Priseljeni iz tujine") %>% select(- 'vrsta') %>% 
-  group_by (drzava, spol) %>% summarise(Stevio=sum(stevilo))
-
-#priseljeni <- meddrzavne %>% filter( vrsta != "Odseljeni iz tujino") %>% select(- 'vrsta') %>% 
-  group_by (drzava, spol) %>% summarise(Stevilo=sum(stevilo)) #to bos potrebovala za pielibr
-
 
 # Graf 3: Graf, ki prikazuje število priseljenega prebivalstva glede na namen selitve in državo predhodnega bivališča.
 
@@ -91,31 +87,16 @@ graf4 <- ggplot(izobrazba_priseljeni, aes(x=leto,y=stevilo, group=1)) +
   scale_fill_brewer(palette = "BrBG") 
 
 #Graf 5: Graf, ki prikazuje število izseljenega prebivalstva glede na njihovo izobrazbo in starostno skupino
-#NUJNO UREDIT GRAF5
-povprecje5 <- izobrazba_izseljeni %>% group_by(starost, izobrazba) %>%
-  summarise(povprecje=(sum(stevilo)/9))
 
-graf5 <- ggplot(povprecje5, aes(x=izobrazba, y=povprecje)) + 
-  geom_point(aes(col=starost, size=povprecje)) + 
-  geom_smooth(method="loess", se=F) + 
-  labs(y="Število ljudi", 
-       x="Vrsta izobrazbe", 
-       title="Povprečno število izseljenega prebivalstva glede na starostno skupino in vrsto izobrazbe") +
-  theme_dark() +
-  scale_fill_brewer(palette = "BrBG") 
-
-graf5a <- ggplot(data=izobrazba_izseljeni, aes(x=leto, y=stevilo, col=spol)) +
-  geom_line(size=1) + facet_grid(~starost) +
+graf5 <- ggplot(data=test5a, aes(x=leto, y=skupaj, col=spol)) +
+  geom_line(size=1) + facet_grid(~vec) +
   theme_bw() +
   scale_color_manual(values=c("darkgoldenrod3", "cadetblue")) +
   xlab("Država") + ylab("Povprečno število(/100)") +
-  ggtitle("Odseljeni prebivalci glede na status aktivnosti") +
-  coord_flip() +
+  ggtitle("Odseljeni prebivalci glede starostno skupino in spol") +
   theme_dark() +
   scale_fill_brewer(palette = "BrBG") + 
-  scale_x_continuous(breaks=seq(2010, 2020, 4))
-
-
+  scale_x_continuous(breaks=seq(2010, 2020, 2))
 
 #Graf 6: Graf, ki prikazuje število izeljenega prebivalstva glede na status aktivosti in državo pihodnjega bivališča
 
@@ -129,4 +110,4 @@ graf6 <- ggplot(data=povprecje6, aes(x = drzava, y = povprecje, fill = status)) 
   coord_flip() +
   theme_dark() +
   scale_fill_brewer(palette = "BrBG") 
-#dva grafa: celine pa evropa po drzavah
+
