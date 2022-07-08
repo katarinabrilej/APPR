@@ -102,14 +102,14 @@ V tej fazi obdelave podatkov, sem uvozila tabele v CSV obliki. Najprej sem jih r
 source("vizualizacija/vizualizacija.r", encoding="UTF-8")
 ```
 
-Osrednji cilj analize podatkov je na podlagi empiričnih podatkov dobiti neko ugotovitev. Vsak dan se potekajo različne selitve, ki so posledica različnih gospoarskih in socialnih dejvanikov: iskanje boljše službe, združitev z družino, študij v tujini, upokojitev in podobne. 
+Osrednji cilj analize podatkov je na podlagi empiričnih podatkov dobiti neko ugotovitev. Vsak dan potekajo različne selitve, ki so posledica različnih gospoarskih in socialnih dejvanikov: iskanje boljše službe, združitev z družino, študij v tujini, upokojitev in podobne. 
 V ta namen bom analizirala podatke o pomembnih selitev za Slovenijo preko katerih bom odgovorila na naslednja vprašanja:
-Ali se je zadnjih letih več prebivalstva izselilo kot priselilo v Slovenijo? Glede na spol, izobrazbo in državo prejšnjega bivališča, kaj bi lahko povedala o prebivalstvu, ki se je priselilo v Slovenijo? Zakaj se  tujci odločajo za selitev v Slovenijo? Kaj bi lahko povedala o statusu aktivnosti, spolu in starosti prebivalstva, ki se je odločilo za izselitev iz Slovenije? Iz katerih regij se je izselilo največ ljudi? Katera regija je Slovencem najobolj priljubljena, da bi se priselili vanjo?
+Glede na spol, izobrazbo in državo prejšnjega bivališča, kaj bi lahko povedala o prebivalstvu, ki se je priselilo v Slovenijo? Zakaj se  tujci odločajo za selitev v Slovenijo? Kaj bi lahko povedala o statusu aktivnosti, spolu in starosti prebivalstva, ki se je odločilo za izselitev iz Slovenije? Iz katerih regij se je izselilo največ ljudi? Katera regija je Slovencem najobolj priljubljena, da bi se priselili vanjo?
 
 
 Spodnji graf je razdeljen na 12 manjših podrgafov, kjer vsak izmed njih predstavlja eno statistično regijo v Sloveniji. Na vsakem podgrafu je razvidno, iz katere regije prihaja prebivalstvo, ki se je odločilo za selitev v določeno regijo. Iz grafa je razvidno, da se je največ ljudi priselilo v Osrednjeslovensko regijo, sledita pa Podravska in Svinjska regija. 
 
-```{r graf1, echo=FALSE , warning=FALSE, fig.align='center', fig.cap='Notranje selitve med statističnimi regijami'}
+```{r graf1, echo=FALSE, fig.align='center', fig.cap='Notranje, warning=FALSE}
 plot(graf1)
 ```
 
@@ -164,6 +164,6 @@ V prvem shiny zavihku je prikazan graf priseljevanja v Slovenijo glede na namen,
 v drugem pa graf izseljenega prebivalstva glede na stopnjo pridobljene izobrazbe v Sloveniji.
 
 #Zaključek
-
-Ugotovila sem, da priseljeno prebivalstvo večinoma prihaja iz držav bivše Jugoslavije, najbolj pa izstopa Bosna in Hercegovina. Ta selitev je bila najmočnejša v časovnem obdobju 2008-2010 in 2018-2020. Glede na namen, največkrat so te selitve zaradi zaposlitve in študija, medtem ko je sezonsko delo bilo aktualno do leta 2008. 
+Pri analizi podatkov sem ugotovila, da se največ ljudi priseljuje v Osrednjeslovensko regijo, kar sem tudi pričakovala. Vendar nisem pričakovala, da se največ ljudi tudi izseljuje iz omenjene regije.
+Hkrati sem ugotovila, da se največ priseljenega prebivalstva prihaja iz držav bivše Jugoslavije, najbolj pa izstopa Bosna in Hercegovina. Ta selitev je bila najmočnejša v časovnem obdobju 2008-2010 in 2018-2020. Glede na namen, največkrat so te selitve zaradi zaposlitve in študija, medtem ko je sezonsko delo bilo aktualno do leta 2008. 
 Če pogledamo selitve iz Slovenije glede na prdobljeno izobrazbo, opazimo da najbolj izstopaja prva starostna skupina (15-29 let), in sicer: ženske z visokošolso izobrazbo in moški s srednješolsko izobrazbo.
