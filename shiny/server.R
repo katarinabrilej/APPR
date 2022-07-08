@@ -7,7 +7,7 @@ shinyServer(function(input, output) {
                            filter(namen == input$prvi_stolpec)) +
       aes(x=leto, y=stevilo, fill=drzava) +
       coord_flip() +
-      labs( x='Leto', y = 'Delež gospodinjstev') + 
+      labs( x='Leto', y = 'Število ljudi') + 
       geom_col(position="dodge") +
       theme_dark() +
       scale_fill_brewer(palette = "BrBG") 
@@ -22,7 +22,7 @@ shinyServer(function(input, output) {
       aes(x=leto, y=stevilo) + 
       geom_point(aes(col=spol, size=1)) +
       facet_grid(vec ~ .) +
-      labs( x='Leto', y = 'Delež gospodinjstev') + 
+      labs( x='Leto', y = 'Število ljudi') + 
       theme_grey() +
       scale_fill_brewer(palette = "BrBG") 
       scale_x_continuous(breaks = seq(2011, 2020, by=2))

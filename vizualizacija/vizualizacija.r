@@ -23,13 +23,13 @@ tm_shape(podatki_pri) +
 
 
 #2. zemljevid: izseljevanje prebivalstva po regijah
-#regije_izs <- medregijske %>% group_by(regijaiz) %>% summarise(skupaj = sum(stevilo, na.rm = TRUE ))
-#regije_izs$regijaiz = regije_izs$regijaiz %>% trimws()
+regije_izs <- medregijske %>% group_by(regijaiz) %>% summarise(skupaj = sum(stevilo, na.rm = TRUE ))
+regije_izs$regijaiz = regije_izs$regijaiz %>% trimws()
 
-#podatki_izs = merge(zemljevid, regije_izs, by.x = "NAME_1", by.y = "regijaiz" )
-#tm_shape(podatki_izs) +
- # tm_polygons("skupaj") +
-  #tm_format("NLD", title="Število prebivalstva, ki se je izselilo iz določene regije", bg.color="white")
+podatki_izs = merge(zemljevid, regije_izs, by.x = "NAME_1", by.y = "regijaiz" )
+tm_shape(podatki_izs) +
+  tm_polygons("skupaj") +
+  tm_format("NLD", title="Število prebivalstva, ki se je izselilo iz določene regije", bg.color="white")
 
 
 
@@ -40,13 +40,13 @@ povprecje_regije <- medregijske %>% group_by(regijaiz, regijapri) %>%
 
 graf1 <- ggplot(data = povprecje_regije, aes(x=" " ,y=povprecje, fill = regijaiz)) +
   geom_bar(stat="identity", position = 'dodge') +
-  facet_wrap(~regijapri, ncol= 6) +
+  facet_wrap(~ regijapri, ncol= 6) +
   xlab(" ") + ylab("Povprečno število") +
   ggtitle("Priseljevanje in odseljevanje po statističnih regijah Slovenije") +
   theme(plot.title = element_text(family="Trebuchet MS", face="bold", size=20, hjust=0, color="black")) +
   theme(axis.text.x = element_text(angle=90)) 
-+ coord_flip() + theme_dark() +
-  scale_fill_brewer(palette = "BrBG") 
+  #+coord_flip() + theme_dark() +
+  #scale_fill_brewer(palette = "BrBG") 
 
 
 #Graf 2: Število priseljenih in izseljenih ljudi glede na drzavo selitve
