@@ -42,7 +42,7 @@ V tej fazi obdelave podatkov, sem uvozila tabele v CSV obliki. Najprej sem jih r
 
 1. $\color{BLACK}{\text{NOTRANJE SELITVE MED STATISTIČNIMI REGIJAMI }}$ 
 
-  - `regijaiz`` - regija iz katere se je prebivalstvo izselilo (besedilo)
+  - `regijaiz` - regija iz katere se je prebivalstvo izselilo (besedilo)
   - `leto` - leto v katerem so selitve potekale(število)
   - `regijav`` - regija v katero se je prebivalstvo priselilo (besedilo)
   - `stevilo` - število ljudi, ki se je v določenem letu in posamezne regije priselilo v drugo natanko določeno         regijo (število)
@@ -109,36 +109,36 @@ Glede na spol, izobrazbo in državo prejšnjega bivališča, kaj bi lahko poveda
 
 Spodnji graf je razdeljen na 12 manjših podrgafov, kjer vsak izmed njih predstavlja eno statistično regijo v Sloveniji. Na vsakem podgrafu je razvidno, iz katere regije prihaja prebivalstvo, ki se je odločilo za selitev v določeno regijo. Iz grafa je razvidno, da se je največ ljudi priselilo v Osrednjeslovensko regijo, sledita pa Podravska in Svinjska regija. 
 
-```{r graf1, echo=FALSE, fig.align='center', fig.cap='Notranje, warning=FALSE}
+```{r graf1, echo=FALSE, fig.align='center', warning=FALSE}
 plot(graf1)
 ```
 
 V drugem grafu sem samo grafično predstavila podatke, iz katerih je bolj razvidno koliko prebivalstva se v povprečju seli v druge države oz. koliko se tujih državljanov iz posamezne države preseli v Slovenijo.
 
-```{r graf2, echo=FALSE, fig.align='center', fig.cap='Povprečno število prebivalstva priseljenega iz tujine oz. odseljenega v tujino, message=FALSE, warning=FALSE}
+```{r graf2, echo=FALSE, fig.align='center', message=FALSE, warning=FALSE}
 graf2
 ```
 
 Najprej sem analizirala priseljevanje v Slovenijo glede na namen selitve. Ker sem želela čim več podatkov prikazati znotraj enega grafa, sem graf razdelila na manjše podgrafe. Tako lahko vidimo kako obsežne so bile selitve glede na namen priseljevanja v določenem letu in državo predhodnega bivališča.
 
-```{r graf3, echo=FALSE, message=FALSE, warning=FALSE, fig.align='center', fig.cap='Priseljeni prebivalci glede na namen selitve po letih'}
+```{r graf3, echo=FALSE, message=FALSE, warning=FALSE, fig.align='center'}
 graf3
 ```
 
 Pridobljena stopnja izobrazbe pri priseljenem prebivalstvu je prikazana na spodnjem grafu, kot tudi država predhodnega bivališča. 
-```{r graf4, echo=FALSE, message=FALSE, warning=FALSE, fig.align='center', fig.cap='Število priseljenega prebivalstva glede na stopnjo izobrazbe'}
+```{r graf4, echo=FALSE, message=FALSE, warning=FALSE, fig.align='center'}
 graf4
 ```
 
-Originalna tabela je vsebovala 11 starostnih skupin, kar je bilo zelo nepregledno za analizo. V ta namen, sem podatke preuredila v 3 starostne skupine. V spodnjem grafu so predstavljeni podatki o odseljenem prebivalstvu glede na starostno skupino in spol.
+Originalna tabela je vsebovala 11 starostnih skupin, kar je bilo zelo nepregledno za analizo. V ta namen, sem podatke preuredila v 3 starostne skupine. V spodnjem grafu so predstavljeni podatki o odseljenem prebivalstvu glede na starostno skupino in spol. (1. skupina: 15-29 let, 2.skupina: 30-49 let, 3. skupina:50-65+ let)
 
-```{r graf5, echo=FALSE, message=FALSE, warning=FALSE, fig.align='center', fig.cap='Odseljeno prebivalstvo glede na starostno skupino in spol'}
+```{r graf5, echo=FALSE, message=FALSE, warning=FALSE, fig.align='center'}
 graf5
 ```
 
 Zadnji graf ponazarja status aktivnosti in državo prihodnjega bivališča ljudi, ki so se izselili iz Slovenije v določenem časovnem obodbju.
 
-```{r graf6, echo=FALSE, message=FALSE, warning=FALSE, fig.align='center', fig.cap='Odseljeni prebivalci glede na status aktivnosti in državo prihodnjega bivališča'}
+```{r graf6, echo=FALSE, message=FALSE, warning=FALSE, fig.align='center'}
 graf6
 ```
 
@@ -149,7 +149,7 @@ graf6
 source("analiza/analiza.r", encoding="UTF-8")
 ```
 Za napredno analizo podatkov sem naredila graf, ki prikazuje izobrazbo in starostno skupino izseljena prebivalstva. 
-#tukaj dodati kaj manjka se oz kaj vidim iz grafa
+
 
 ```{r graf7, echo=FALSE, message=FALSE, warning=FALSE, fig.align='center', fig.cap='Napoved rasti mesečnih neto plač v Pomurju do leta 2022'}
 graf7
@@ -163,7 +163,7 @@ shinyAppDir("shiny", options=list(width="100%", height=600))
 V prvem shiny zavihku je prikazan graf priseljevanja v Slovenijo glede na namen,
 v drugem pa graf izseljenega prebivalstva glede na stopnjo pridobljene izobrazbe v Sloveniji.
 
-#Zaključek
+## Zaključek
 Pri analizi podatkov sem ugotovila, da se največ ljudi priseljuje v Osrednjeslovensko regijo, kar sem tudi pričakovala. Vendar nisem pričakovala, da se največ ljudi tudi izseljuje iz omenjene regije.
 Hkrati sem ugotovila, da se največ priseljenega prebivalstva prihaja iz držav bivše Jugoslavije, najbolj pa izstopa Bosna in Hercegovina. Ta selitev je bila najmočnejša v časovnem obdobju 2008-2010 in 2018-2020. Glede na namen, največkrat so te selitve zaradi zaposlitve in študija, medtem ko je sezonsko delo bilo aktualno do leta 2008. 
 Če pogledamo selitve iz Slovenije glede na prdobljeno izobrazbo, opazimo da najbolj izstopaja prva starostna skupina (15-29 let), in sicer: ženske z visokošolso izobrazbo in moški s srednješolsko izobrazbo.
