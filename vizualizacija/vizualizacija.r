@@ -50,6 +50,10 @@ graf1 <- ggplot(data = povprecje_regije, aes(x=" " ,y=povprecje, fill = regijaiz
   #+coord_flip() + theme_dark() +
   #scale_fill_brewer(palette = "BrBG") 
 
+graf1 <- graf1 + guides(fill=guide_legend(title="Iz katere regije  \nse izseljuje \nprebivalstvo")) +
+  theme(legend.title = element_text(colour="black", size=10, 
+                                    face="bold"))
+
 
 #Graf 2: Število priseljenih in izseljenih ljudi glede na drzavo selitve
 
@@ -95,16 +99,18 @@ graf4 <- ggplot(izobrazba_priseljeni, aes(x=leto,y=stevilo, group=1)) +
   facet_grid(izobrazba ~ .) + 
   labs(y="Število ljudi", 
        x="Vrsta izobrazbe", 
-       title="Število priseljenega prebivalstva glede na stopnjo izobrazbe") +
+       title="Povpečno število priseljenega prebivalstva glede na stopnjo izobrazbe") +
   theme_dark() +
-  scale_fill_brewer(palette = "BrBG") 
-
+  scale_fill_brewer(palette = "RdPu") 
+ 
 graf4 <- graf4 + guides(col=guide_legend(title="Država predhodnega bivališča")) +
   theme(legend.title = element_text(colour="black", size=10, 
                                     face="bold"))
-graf4 <- graf4 + guides(size=guide_legend(title="Število priseljenega prebivalstva")) +
+graf4 <- graf4 + guides(size=guide_legend(title="Povprečno število priseljenega prebivalstva")) +
   theme(legend.title = element_text(colour="black", size=10, 
-                                    face="bold"))
+                                    face="bold")) 
+  
+
 
 #Graf 5: Graf, ki prikazuje število izseljenega prebivalstva glede na njihovo izobrazbo in starostno skupino
 

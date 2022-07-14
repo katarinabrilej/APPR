@@ -10,9 +10,14 @@ shinyServer(function(input, output) {
       labs( x='Leto', y = 'Število ljudi') + 
       geom_col(position="dodge") +
       theme_dark() +
-      scale_fill_brewer(palette = "BrBG") 
+      scale_fill_brewer(palette = "BrBG") +
+      guides(fill=guide_legend(title="Država predhodnega bivališča")) +
+        theme(legend.title = element_text(colour="black", size=10, 
+                                          face="bold"))
     #scale_x_continuous(breaks = seq(2011, 2019, by=4))
     print(graf.namen)
+    
+    
   })
   
   
@@ -24,8 +29,11 @@ shinyServer(function(input, output) {
       facet_grid(vec ~ .) +
       labs( x='Leto', y = 'Število ljudi') + 
       theme_grey() +
-      scale_fill_brewer(palette = "BrBG") 
-      scale_x_continuous(breaks = seq(2011, 2020, by=2))
+      scale_fill_brewer(palette = "BrBG") +
+      scale_x_continuous(breaks = seq(2011, 2020, by=2))+
+      guides(fill=guide_legend(title="Spol")) +
+        theme(legend.title = element_text(colour="black", size=10, 
+                                          face="bold"))
       print(graf.izobrazba)
   })
   
