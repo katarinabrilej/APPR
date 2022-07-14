@@ -17,7 +17,6 @@ knitr::opts_chunk$set(echo=FALSE, message=FALSE, warning=FALSE)
 source("lib/libraries.r", encoding="UTF-8")
 ```
 
-
 ```{r rstudio, results='asis'}
 # Izris povezave do RStudia na Binderju
 source("lib/rstudio.r", encoding="UTF-8")
@@ -29,6 +28,9 @@ V projektu sem analizirala priseljevane in izseljevanje iz Slovenije med letoma 
 Zanimal me je, kakšno prebivalstvo glede na stopnjo izobrazbe se izseljuje in priseljuje v Slovenijo. Poleg tega, sem obravnavala selitve glede na namen, starost in spol.
 Znotraj Slovenije pa sem prikazala iz katerih regij se največ ljudi priseli oz. odseli.
 Vse podatke sem pridobila na [Statističnem uradu republike Slovenije](https://www.stat.si/StatWeb/).
+
+![](slike/ilustration.jpg)
+
 
 
 
@@ -109,11 +111,33 @@ Glede na spol, izobrazbo in državo prejšnjega bivališča, kaj bi lahko poveda
 
 Spodnji graf je razdeljen na 12 manjših podrgafov, kjer vsak izmed njih predstavlja eno statistično regijo v Sloveniji. Na vsakem podgrafu je razvidno, iz katere regije prihaja prebivalstvo, ki se je odločilo za selitev v določeno regijo. Iz grafa je razvidno, da se je največ ljudi priselilo v Osrednjeslovensko regijo, sledita pa Podravska in Svinjska regija. 
 
+```{r zemljevid$NAME_1, fig.align='center', fig.cap='Zemljevid 1'}
+
+regije_pri <- medregijske %>% group_by(regijapri) %>% summarise(skupaj = sum(stevilo, na.rm = TRUE ))
+regije_pri$regijapri = regije_pri$regijapri %>% trimws()
+
+zemljevid_pri = merge(zemljevid, regije_pri, by.x = "NAME_1", by.y = "regijapri" )
+  tm_shape(zemljevid_pri) +
+  tm_polygons("skupaj", palette = 'Oranges', colorNA = NULL, title = "Število ljudi") +
+  tm_format("NLD", title="Število prebivalstva, ki se je priselilo v določene regije", bg.color="white")
+
+regije_izs <- medregijske %>% group_by(regijaiz) %>% summarise(skupaj = sum(stevilo, na.rm = TRUE ))
+regije_izs$regijaiz = regije_izs$regijaiz %>% trimws()
+
+zemljevid_izs = merge(zemljevid, regije_izs, by.x = "NAME_1", by.y = "regijaiz" )
+  tm_shape(zemljevid_izs) + 
+  tm_polygons("skupaj", palette = 'Oranges', colorNA = NULL, title = "Število ljudi") +
+  tm_format("NLD", title="Število prebivalstva, ki se je izselilo iz doloćene regije", bg.color="white") +
+  tm_layout(legend.position = c("left", "bottom"))
+```
+
+  
+
+
 ```{r graf1, echo=FALSE, fig.align='center', warning=FALSE}
 plot(graf1)
 ```
-
-V drugem grafu sem samo grafično predstavila podatke, iz katerih je bolj razvidno koliko prebivalstva se v povprečju seli v druge države oz. koliko se tujih državljanov iz posamezne države preseli v Slovenijo.
+Drugi graf prikazuje selitve iz tujine in v tujino glede na državo predhodnega oz. prihodnjega bivališča. Torej, pri posamezni državi lahko razberemo povprečno število ljudi, ki se je v določenem letu odselilo iz te države in priselilo v Slovenijo in obratno. 
 
 ```{r graf2, echo=FALSE, fig.align='center', message=FALSE, warning=FALSE}
 graf2
@@ -148,10 +172,14 @@ graf6
 ```{r analiza}
 source("analiza/analiza.r", encoding="UTF-8")
 ```
-Za napredno analizo podatkov sem naredila graf, ki prikazuje izobrazbo in starostno skupino izseljena prebivalstva. 
+Za napredno analizo podatkov sem se odločila analizirati izseljeno prebivalstvo glede na stopnjo izobrazbe, in sicer analizirati odstopanje od povprečja. 
+\n prebivalstvu, ki se je izselilo z osnovno šolo, opazimo, da je trend izseljevanja približno enak skozi celoten časovni interval. 
+Med tem ko, število ljudi, ki se je izselilo s pridobljeno srednjo šolo, v povprečju rahlo narašča.
+Vidimo, da znotraj te skupine najbolj izstopa druga starostna skupina (30-49 let), ki se je nadpovrpečno izseljevala.\n
+Trjetja starostna skupina z doseženo srednješolsko izobrazbo se v obravavanem časovnem obdobju manj izseljuje kot prebivalsto iz prve in druge starostne skupine.\n
+Nazadnje, opazimo, da se ljudi s visokošolsko izobrazbo v povprečju manj izseljujejo iz države kot tisti s srednješolsko izobrazbo. Najbolj opaženo odstopanje od povprečja je med letoma 2016 in 2018 pri drugi starostni skupini, ki se je v tem obdobju selila več kot drugi.
 
-
-```{r graf7, echo=FALSE, message=FALSE, warning=FALSE, fig.align='center', fig.cap='Napoved rasti mesečnih neto plač v Pomurju do leta 2022'}
+```{r graf7, echo=FALSE, message=FALSE, warning=FALSE, fig.align='center', fig.cap='Analiza odstopanj pri izseljencih glede na njihovo izobrazbo'}
 graf7
 ```
 
