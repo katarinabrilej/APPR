@@ -30,10 +30,10 @@ shinyServer(function(input, output) {
       labs( x='Leto', y = 'Število ljudi') + 
       theme_grey() +
       scale_fill_brewer(palette = "BrBG") +
-      scale_x_continuous(breaks = seq(2011, 2020, by=2))+
-      guides(fill=guide_legend(title="Spol")) +
-        theme(legend.title = element_text(colour="black", size=10, 
-                                          face="bold"))
+      scale_x_continuous(breaks = seq(2011, 2020, by=2)) +
+      guides(col=guide_legend(title="Spol")) +
+      theme(legend.title = element_text(colour="black", size=10, 
+                                        face="bold"))
       print(graf.izobrazba)
   })
   
