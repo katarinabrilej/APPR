@@ -1,6 +1,6 @@
 ---
 title: "Poročilo pri predmetu Analiza podatkov s programom R"
-author: "Študent FMF"
+author: "Admira Abdić"
 output:
   html_document: default
   pdf_document:
@@ -17,10 +17,25 @@ knitr::opts_chunk$set(echo=FALSE, message=FALSE, warning=FALSE)
 source("lib/libraries.r", encoding="UTF-8")
 ```
 
+```{r rstudio, results='asis'}
+# Izris povezave do RStudia na Binderju
+source("lib/rstudio.r", encoding="UTF-8")
+```
 
-## Izbira teme
 
-***
+## Analiza selitve Slovencev
+V projektu sem analizirala priseljevane in izseljevanje iz Slovenije med letoma 2000 in 2020.
+Zanimal me je, kakšno prebivalstvo glede na stopnjo izobrazbe se izseljuje in priseljuje v Slovenijo. Poleg tega, obravnavala sem selitve glede na namen, starost in spol.
+Znotraj Slovenije pa sem prikazala iz katerih regij se največ ljudi priseli oz. odseli.
+Vse podatke sem pridobila na [Statističnem uradu republike Slovenije](https://www.stat.si/StatWeb/).
+
+![](slike/ilustration.jpg)
+
+
+
+
+
+
 
 ## Obdelava, uvoz in čiščenje podatkov
 
@@ -28,24 +43,178 @@ source("lib/libraries.r", encoding="UTF-8")
 source("uvoz/uvoz.r", encoding="UTF-8")
 ```
 
-***
+V tej fazi obdelave podatkov, sem uvozila tabele v CSV obliki. Najprej sem jih razporedila v 6 razpredelnicah, v *tidy data* obliki.
 
+1. $\color{BLACK}{\text{NOTRANJE SELITVE MED STATISTIČNIMI REGIJAMI }}$ 
+
+  - `regijaiz` - regija iz katere se je prebivalstvo izselilo (besedilo)
+  - `leto` - leto v katerem so selitve potekale(število)
+  - `regijav`` - regija v katero se je prebivalstvo priselilo (besedilo)
+  - `stevilo` - število ljudi, ki se je v določenem letu in posamezne regije priselilo v drugo natanko določeno         regijo (število)
+  
+  
+2. $\color{BLACK}{\text{MEDDRŽAVNE SELITVE GLEDE NA SPOL IN VRSTO SELITVE}}$ 
+
+  - `vrsta` - predstavlja vrsto selitve, bodisi priseljevanje podisi izseljevanje (besedilo)
+  - `drzava` - država iz katere prihajajo priseljenci oz. države v katere se bodo priselili izseljenci (besedilo)
+  - `leto` - leto kdaj so potekale določene selitve (število)
+  - `stevilo` - število ljudi, ki se je v določenem letu in posamezne države priselilo v Slovenijo in obratno           (število)
+  
+  
+3. $\color{BLACK}{\text{PRISELJENO PREBIVALSTVO GLEDE NA NAMEN IN DRŽAVO PREDHODNEGA BIVALIŠČA}}$ 
+
+  - `drzava` - država iz katere prihajajo priseljenci (besedilo)
+  - `leto` - leto selitve (število)
+  - `namen` - predstavlja namen oz. cilj priseljevanja v Slovenijo (zaposlitev, sezonsko delo, združitev z družino,     študij in drugo)
+  - `stevilo` - število ljudi, ki se je v določenem letu iz posamezne države priselilo v Slovenijo
+  
+  
+4. $\color{BLACK}{\text{PRISELJENO PREBIVALSTVO GLEDE NA NAMEN IN DRŽAVO PREDHODNEGA BIVALIŠČA}}$ 
+
+  - `spol`  - spol priseljencev (besedilo)
+  - `drzava` - država iz katere prihajajo priseljenci (besedilo)
+  - `leto` - leto selitve (število)
+  - `izobrazba` - predstavlja izobrazbo, ki so jo do trenutka priseljevanja v Slovenijo, pridobili priseljenci          (besedilo)
+  - `stevilo` - število ljudi, ki se je v določenem letu priselilo v Slovenijo
+  
+5. $\color{BLACK}{\text{IZSELJENO PREBIVALSTVO GLEDE NA IZOBRAZBO IN STAROSTNO SKUPINO}}$ 
+
+  - `spol`  - spol izseljenega prebivalstva (besedilo)
+  - `starost` - starost izseljenega prebivalstva (besedilo)
+  - `leto` - leto selitve (število)
+  - `izobrazba` - predstavlja izobrazbo, ki so jo do trenutka izseljevanja iz Slovenije, pridobili izseljenci          (besedilo)
+  - `stevilo` - število ljudi, ki se je v določenem letu izselilo iz Slovenije
+  - `vec` - predstavlja starostne skupine. Originalni drugi stolpec sem preuredila v 3 starostne skupine, in            sicer:
+      1. skupina: 15-29 let starosti
+      2. skupina: 30-49 let starosti
+      3. skupina: 50-65+ let starosti.
+      Lahko bi uporabila tudi izhodiščno razvrstitv v 11 starostnih skupin, vendar zaradi boljše preglednosti           grafov, sem se odločila podatke razvrsit v tri večje starostne skupine. (številka)
+      
+      
+6. $\color{BLACK}{\text{IZSELJENO PREBIVALSTVO GLEDE NA STATUS AKTIVNOSTI IN DRŽAVO PRIHODNJEGA BIVALIŠČA}}$ 
+
+  - `spol`  - spol izseljencev (besedilo)
+  - `drzava` - država prihodnjega bivališča izseljenega prebivalstva Slovenije (besedilo)
+  - `leto` - leto selitve (število)
+  - `status` - predstavlja status aktivnosti prebivalstva v Sloveniji do časa njihove selitve v druge države            (besedilo)
+  - `stevilo` - število ljudi, ki se je v določenem letu izselilo iz Slovenije
+
+
+  
 ## Analiza in vizualizacija podatkov
-
+ 
 ```{r vizualizacija, results='hide'}
 source("vizualizacija/vizualizacija.r", encoding="UTF-8")
 ```
 
-***
+Osrednji cilj analize podatkov je na podlagi empiričnih podatkov dobiti neko ugotovitev. Vsak dan potekajo različne selitve, ki so posledica številnih gospoarskih in socialnih dejvanikov: iskanje boljše službe, združitev z družino, študij v tujini, upokojitev in podobne. 
+
+
+V ta namen sem analizirala podatke o pomembnih selitev za Slovenijo preko katerih bom odgovorila na naslednja vprašanja:
+Glede na spol, izobrazbo in državo prejšnjega bivališča, kaj bi lahko povedala o prebivalstvu, ki se je priselilo v Slovenijo? Zakaj se  tujci odločajo za selitev v Slovenijo? Kaj bi lahko povedala o statusu aktivnosti, spolu in starosti prebivalstva, ki se je odločilo za izselitev iz Slovenije? Iz katerih regij se je izselilo največ ljudi? Katera regija je Slovencem najobolj priljubljena, da bi se priselili vanjo?
+
+
+Najprej sem podatke o notranjih selitvah v Sloveniji predstavila z dvema zemljevidoma. V prvem zemljevidu so prikazane selitve v določeno regijo statistično regijo Slovenije, v drugem pa selitve iz posamezne regije. Opazimo, da osrednjeslovenska regija izstopa kako v prvem, tako tudi v drugem zemljevidu.
+
+```{r zemljevid$NAME_1, fig.align='center', fig.cap='Zemljevid'}
+
+regije_pri <- medregijske %>% group_by(regijapri) %>% summarise(skupaj = sum(stevilo, na.rm = TRUE ))
+regije_pri$regijapri = regije_pri$regijapri %>% trimws()
+
+zemljevid_pri = merge(zemljevid, regije_pri, by.x = "NAME_1", by.y = "regijapri" )
+  tm_shape(zemljevid_pri) +
+  tm_polygons("skupaj", palette = 'Oranges', colorNA = NULL, title = "Število ljudi") +
+  tm_format("NLD", title="Število prebivalstva, ki se je priselilo v določene regije", bg.color="white")
+
+regije_izs <- medregijske %>% group_by(regijaiz) %>% summarise(skupaj = sum(stevilo, na.rm = TRUE ))
+regije_izs$regijaiz = regije_izs$regijaiz %>% trimws()
+
+zemljevid_izs = merge(zemljevid, regije_izs, by.x = "NAME_1", by.y = "regijaiz" )
+  tm_shape(zemljevid_izs) + 
+  tm_polygons("skupaj", palette = 'Oranges', colorNA = NULL, title = "Število ljudi") +
+  tm_format("NLD", title="Število prebivalstva, ki se je izselilo iz doloćene regije", bg.color="white") +
+  tm_layout(legend.position = c("left", "bottom"))
+```
+
+
+Identične podatke, ki sem jih uporabila za risanje zemljevidov, sem predstavila tudi s spodnjim grafom, ki je sestavljen iz 12 manjših grafov. Vsaki manjši graf prikazuje koliko ljudi se je v povprečju izselilo  iz drugih 11 regij in priselilo v regijo, ki je predstavljena v opazovanem podgrafu.
+Iz tega grafa je bolj razvidno, da se prebivalstvo iz osrednjeslovenske regije večinoma priseljuje v gorenjsko regijo  in jugovzhodno Slovenijo. Poleg tega, opazimo, da večinoma ljudi, ki se priselijo v osrednjeslovensko regijo prihajajo iz gorenjske, savinjske in goriške regije ter jugovzhodne Slovenije.
+
+
+```{r graf1, echo=FALSE, fig.align='center', warning=FALSE}
+plot(graf1)
+```
+Drugi graf prikazuje selitve iz tujine in v tujino glede na državo predhodnega oz. prihodnjega bivališča. Torej, pri posamezni državi lahko razberemo povprečno število ljudi, ki se je v določenem letu odselilo iz te države in priselilo v Slovenijo in obratno. 
+
+```{r graf2, echo=FALSE, fig.align='center', message=FALSE, warning=FALSE}
+graf2
+```
+
+Tretji graf vsebuje podatke o številu ljudi in njihovem namenu priseljevanja v Slovenijo ter iz katere države prihajajo priseljenci v označenem časovnem intervalu. 
+Nedvoumno skozi vsa leta se največ ljudi priseli zaradi zaposlitve, nato pa zaradi združitve z družino. Glede na državo predhodnega bivališča, lahko rečemo, da prevladujejo priseljenci iz Bosne in Hercegovine, potem Srbije in drugih držav EU. Zaradi boljše preglednosti, število ljudi je predstavljeno kako na x osi, tako tudi z velikostjo posamezne pike.
+
+```{r graf3, echo=FALSE, message=FALSE, warning=FALSE, fig.align='center'}
+graf3
+```
+
+
+Naslednji graf prikazuje priseljeno prebivalstvo glede na pridobljeno stopnjo izobrazbe in državo predhodnega bivališča. Iz grafa je razvivdno, da je v povprečju med priseljenim prebivalstvom največ tistih, ki imajo srednješolsko izobrazbo in večinoma prihajajo iz Bosne in Hercegovine.
+
+```{r graf4, echo=FALSE, message=FALSE, warning=FALSE, fig.align='center'}
+graf4
+```
+
+Spodnji graf je sestavljen iz preurejene izhodiščne tabele, ki je vsebovala 11 staorstnih skupin, vendar zaradi boljše preglednosti podatkov sem tabelo preuredila tako, da je starost prebivalstva predstavljena s trema starostnima skupinama.
+Tako imamo:
+
+- `1. skupina` 15-29 let
+- `2. skupina` 30-49 let
+- `3. skupina` 50-65+ let
+  
+Iz spodnjega grafa je razvidno, da je med odseljenimi prebivalci največ moških, ki pripadajo 2. starostni skupini. Opazimo tudi, da ta krivulja strmo narašča med letoma 2018 in 2020. Tisto, kar je skupno vsem trem starostnim skupinam, je dejstvo, da se moški več selijo kot ženske.
+
+```{r graf5, echo=FALSE, message=FALSE, warning=FALSE, fig.align='center'}
+graf5
+```
+
+Zadnji graf ponazarja status aktivnosti in državo prihodnjega bivališča ljudi, ki so se izselili iz Slovenije v določenem časovnem obodbju. Graf pokaže, da se v povprečju največ neaktivnega prebivalstva odloči za selitev v Nemčijo in Avstrijo, med tem ko se aktivno prebivalstvo največ odseljuje v Avstrijo in Bosno in Hercegovino. Nazadnje, lahko vidimo da se zaposleni ljudi več selijo kot brezposelni.
+
+```{r graf6, echo=FALSE, message=FALSE, warning=FALSE, fig.align='center'}
+graf6
+```
+
 
 ## Napredna analiza podatkov
 
 ```{r analiza}
 source("analiza/analiza.r", encoding="UTF-8")
 ```
+Za napredno analizo podatkov sem se odločila analizirati izseljeno prebivalstvo glede na stopnjo izobrazbe, in sicer analizirati odstopanje od povprečja. 
 
-***
+Pri prebivalstvu, ki se je izselilo z osnovno šolo, opazimo, da je trend izseljevanja približno enak skozi celoten časovni interval. 
+Med tem ko, število ljudi, ki se je izselilo s pridobljeno srednjo šolo, v povprečju rahlo narašča.
+Vidimo, da znotraj te skupine najbolj izstopa druga starostna skupina (30-49 let), ki se je nadpovrpečno izseljevala.
+
+Trjetja starostna skupina z doseženo srednješolsko izobrazbo se v obravavanem časovnem obdobju manj izseljuje kot prebivalsto iz prve in druge starostne skupine.
+
+
+Nazadnje, opazimo, da se ljudi s visokošolsko izobrazbo v povprečju manj izseljujejo iz države kot tisti s srednješolsko izobrazbo. Najbolj opaženo odstopanje od povprečja je med letoma 2016 in 2018 pri drugi starostni skupini, ki se je v tem obdobju selila več kot drugi.
+
+```{r graf7, echo=FALSE, message=FALSE, warning=FALSE, fig.align='center', fig.cap='Analiza odstopanj pri izseljencih glede na njihovo izobrazbo'}
+graf7
+```
+
+V prvem shiny zavihku je prikazan graf priseljevanja v Slovenijo glede na namen. 
+Drugi zavihek prikazuje graf izseljenega prebivalstva glede na stopnjo pridobljene izobrazbe v Sloveniji.
+
 
 ```{r shiny}
-#shinyAppDir("shiny", options=list(width="100%", height=600))
+shinyAppDir("shiny", options=list(width="100%", height=600))
 ```
+
+
+## Zaključek
+Pri notranjih selitvah je analiza pokazala, da se največ ljudi priseli in izseli iz osrednjeslovenske regije. Ugotovila sem tudi, da se največ priseljenega prebivalstva prihaja iz držav bivše Jugoslavije, med njimi najbolj izstopa Bosna in Hercegovina. Te selitve so bile najintenzivnejše v časovnem obdobju 2008-2010 in 2018-2020. Glede na namen, največkrat so te selitve zaradi zaposlitve in študija, medtem ko je sezonsko delo bilo aktualno do leta 2008. 
+Če pogledamo selitve iz Slovenije glede na prdobljeno izobrazbo, opazimo da najbolj izstopaja prva starostna skupina (15-29 let), in sicer: ženske z visokošolso izobrazbo in moški s srednješolsko izobrazbo.
+Na podlagi ugotovitev iz analize, menim, da se bo še naprej največ izseljevalo prebivalstvo s srednjo šolo, ki pripadajo drugi starostni skupini oziroma, dosedanji trend izseljevanaj se bo nadaljeval.
+Zdi se mi, da se bo tudi priseljevanje iz balkanskih držav nadaljevalo, vendar med njimi bo vedno več ljudi z visokošolsko izobrazbo ter poleg zaposlitve, ki je osrednji namen priseljevanja teh ljudi, bo močno priseljevanje zaradi študija v Sloveniji.
