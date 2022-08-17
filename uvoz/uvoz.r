@@ -39,6 +39,10 @@ read_excel(
 )
 
 
+read_csv(
+  "podatki/zmoznost-gospodinjstva-da-pocitnikuje.csv"
+)
+
 
 
 # Branje podatkov o brezposelnosti po regijah - izpustim stolpec "MERITVE"
