@@ -3,6 +3,7 @@
 source("lib/libraries.r")
 
 
+
 # Definiranje encodinga
 loc = locale(
   date_names = "sl", 
@@ -32,6 +33,12 @@ oznake_regij = c(
   "Zasavska"="za", 
   "SLOVENIJA"="slo"
 )
+
+read_excel(
+  "podatki/izobrazba-po-regijah.xlsx",
+)
+
+
 
 
 # Branje podatkov o brezposelnosti po regijah - izpustim stolpec "MERITVE"
