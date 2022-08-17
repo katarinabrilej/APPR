@@ -66,44 +66,39 @@ read_csv2(
   col_names=TRUE,
   col_types = cols(
     .default = col_guess(),
-    # PLAČA = col_skip(),
+    'PLAČA' = col_skip(),
+    # 'STATISTIČNA REGIJA' = col_skip(),
+    'STAROST' = col_skip(),
+    'SPOL' = col_skip(),
   )
 )
 
 
-
-
-
-# Branje podatkov o brezposelnosti po regijah - izpustim stolpec "MERITVE"
-brezposelnost_po_regijah = read_csv(
-  "podatki/stopnje_brezposelnosti_po_regijah.csv", 
-  col_names=TRUE, 
+read_csv(
+  "podatki/stopnje_brezposelnosti_po_regijah.csv",
+  locale = locale(encoding = "Windows-1250"),
+  col_names=TRUE,
   col_types = cols(
     .default = col_guess(),
-    MERITVE = col_skip()
+    MERITVE = col_skip(),
+    '2008' = col_skip(),
+    '2009' = col_skip(),
+    '2010' = col_skip(),
   )
 )
 
-# Branje podatkov o brezposelnosti po regijah
-bdp_po_regijah = read_csv(
-  "podatki/bdp_po_regijah.csv",
-  col_names = TRUE,
-  locale = loc,
+df <- read_csv2(
+  "podatki/bolniski-stalez-po-regijah.csv",
+  col_names=TRUE,
   col_types = cols(
     .default = col_guess(),
-    MERITVE = col_skip()
-  )
+    Spol = col_skip(),
+    Kazalnik = col_skip(),
+  ),
+  skip_empty_rows = TRUE,
 )
+df[-c(14), ]
 
-# Branje podatkov o trajanju bolniškega staleža - izpustim stolpec "Tip podatka"
-kazalniki_bolniskega_staleza = read_excel(
-  "podatki/kazalniki_bolniskega_staleza_po_statisticnih_regijah_in_spolu.xlsx",
-  col_names = TRUE,
-  col_types = c(
-    "guess", "guess", "guess", "skip", 
-    "guess", "guess", "guess", "guess", "guess", "guess", "guess", 
-    "guess", "guess", "guess", "guess", "guess", "guess")
-)
 
 dopolni_stolpec_spol <- function(spol) {
   # Ker je tabela razdeljena glede na spol, vrednost atributa spol izgleda takole:
