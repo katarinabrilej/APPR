@@ -40,9 +40,20 @@ read_excel(
 )
 
 
-read_csv(
+read_csv2(
   "podatki/zmoznost-gospodinjstva-da-pocitnikuje.csv",
-  skip = 2,
+  col_names=TRUE,
+  col_types= cols(
+    .default = col_guess(),
+    '2008' = col_skip(),
+    '2009' = col_skip(),
+    '2010' = col_skip(),
+  )
+)
+
+read_csv2(
+  "podatki/stopnja-zelo-nizke-delovne-intenzivnosti.csv",
+  # skip=2
   col_names=TRUE,
 )
 
@@ -52,7 +63,6 @@ read_csv(
 brezposelnost_po_regijah = read_csv(
   "podatki/stopnje_brezposelnosti_po_regijah.csv", 
   col_names=TRUE, 
-  locale = loc,
   col_types = cols(
     .default = col_guess(),
     MERITVE = col_skip()
