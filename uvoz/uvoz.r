@@ -55,7 +55,22 @@ read_csv2(
   "podatki/stopnja-zelo-nizke-delovne-intenzivnosti.csv",
   # skip=2
   col_names=TRUE,
+  col_types = cols(
+    .default = col_guess(),
+    MERITVE = col_skip(),
+  )
 )
+
+read_csv2(
+  "podatki/povprecna-bruto-placa-po-regijah.csv",
+  col_names=TRUE,
+  col_types = cols(
+    .default = col_guess(),
+    # PLAČA = col_skip(),
+  )
+)
+
+
 
 
 
