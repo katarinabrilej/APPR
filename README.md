@@ -7,7 +7,7 @@ Skozi to seminarsko nalogo bom raziskoval ter analiziral povezavo med splošnim 
 
 Za začetek bom kot edini makroekonomski kazalec vzel realno rast BDP-ja ter stopnjo brezposelnosti v Republiki Sloveniji, saj po mojem skupaj najbolje odražata makroekonomsko sliko po eni strani ter položaj delavcev na drugi.
 
-Za primerjavo sem vzel povpre povprečni bolniški stalež po statističnih regijah in spolu od leta 2008 do 2020.
+Za primerjavo sem vzel povprečni bolniški stalež po statističnih regijah in spolu od leta 2008 do 2020.
 
 ## Podatki
 
