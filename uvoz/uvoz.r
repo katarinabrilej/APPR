@@ -36,11 +36,14 @@ oznake_regij = c(
 
 read_excel(
   "podatki/izobrazba-po-regijah.xlsx",
+
 )
 
 
 read_csv(
-  "podatki/zmoznost-gospodinjstva-da-pocitnikuje.csv"
+  "podatki/zmoznost-gospodinjstva-da-pocitnikuje.csv",
+  skip = 2,
+  col_names=TRUE,
 )
 
 
