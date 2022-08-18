@@ -3,44 +3,12 @@
 source("lib/libraries.r")
 
 
-
-# Definiranje encodinga
-loc = locale(
-  date_names = "sl", 
-  date_format = "%AD", 
-  time_format = "%AT", 
-  decimal_mark = ".", 
-  grouping_mark = ",", 
-  tz = "UTC", 
-  encoding = "windows-1250", 
-  asciify = FALSE
-  )
-
-# Imena regij bomo preimenovali na sledeč način 
-# (da ne bomo imeli šumnikov ter celotnih besed)
-oznake_regij = c(
-  "Gorenjska"="kr",
-  "Goriška"="ng",
-  "Jugovzhodna"="nm", 
-  "Koroška"="sg", 
-  "Obalno kraška"="kp",
-  "Osrednjeslovenska"="lj", 
-  "Podravska"="mb", 
-  "Pomurska"="ms", 
-  "Posavska"="kk",
-  "Primorsko-notranjska"="po", 
-  "Savinjska"="ce", 
-  "Zasavska"="za", 
-  "SLOVENIJA"="slo"
-)
-
-read_excel(
+izobrazba_po_regijah <- read_excel(
   "podatki/izobrazba-po-regijah.xlsx",
-
 )
 
 
-read_csv2(
+zmoznost_pocitnikovanja <- read_csv2(
   "podatki/zmoznost-gospodinjstva-da-pocitnikuje.csv",
   col_names=TRUE,
   col_types= cols(
@@ -51,7 +19,15 @@ read_csv2(
   )
 )
 
-read_csv2(
+temp_tabela1 <- zmoznost_pocitnikovanja %>%
+  pivot_longer(
+    c('2011', '2012', '2013', '2014', '2015', '2016', '2017', '2018', '2019', '2020'),
+    names_to='leto',
+    values_to='testna_meritev', 
+  )
+
+
+stopnja_nizke_delovne_intenzivnosti <- read_csv2(
   "podatki/stopnja-zelo-nizke-delovne-intenzivnosti.csv",
   # skip=2
   col_names=TRUE,
@@ -61,7 +37,7 @@ read_csv2(
   )
 )
 
-read_csv2(
+povprecna_bruto_placa <- read_csv2(
   "podatki/povprecna-bruto-placa-po-regijah.csv",
   col_names=TRUE,
   col_types = cols(
@@ -74,7 +50,7 @@ read_csv2(
 )
 
 
-read_csv(
+stopnje_brezposelnosti <- read_csv(
   "podatki/stopnje_brezposelnosti_po_regijah.csv",
   locale = locale(encoding = "Windows-1250"),
   col_names=TRUE,
@@ -87,7 +63,8 @@ read_csv(
   )
 )
 
-df <- read_csv2(
+# 14. vrstico izpustimo, saj za nas ni relevantna
+bolniski_stalez <- read_csv2(
   "podatki/bolniski-stalez-po-regijah.csv",
   col_names=TRUE,
   col_types = cols(
@@ -96,8 +73,7 @@ df <- read_csv2(
     Kazalnik = col_skip(),
   ),
   skip_empty_rows = TRUE,
-)
-df[-c(14), ]
+)[-c(14), ]
 
 
 dopolni_stolpec_spol <- function(spol) {
