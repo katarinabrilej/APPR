@@ -33,12 +33,37 @@ izobrazba_po_regijah_raw <- read_excel(
 ) 
 
 izobrazba_po_regijah <- izobrazba_po_regijah_raw %>% 
-  dplyr::select(-Spol) %>%
   left_join(
     regije.slo,
     by="Regija"
   ) %>% 
-  dplyr::select(-c(Regija))
+  mutate(
+    `Izobrazba - Nizka` = `Osnovnošolska ali manj - Skupaj` + `Srednješolska - Skupaj`
+  )  %>%
+  dplyr::rename(
+    `Izobrazba - Visoka` = `Višješolska, visokošolska - Skupaj`
+  ) %>%
+  mutate(
+    `delez-visoke-izobrazbe` = `Izobrazba - Visoka` / `Izobrazba - SKUPAJ`,
+    `delez-nizke-izobrazbe` = `Izobrazba - Nizka` / `Izobrazba - SKUPAJ`
+  ) %>% 
+  dplyr::select(
+    - `Osnovnošolska ali manj - Skupaj`,
+    - `Srednješolska - Skupaj`,
+    - `Izobrazba - Visoka`,
+    - `Izobrazba - Nizka`,
+    - `Izobrazba - SKUPAJ`,
+    - `Spol`,
+    - `Osnovnošolska`,
+    - `Visokošolska 3. stopnje ipd.`,
+    - `Visokošolska 2. stopnje ipd.`,
+    - `Visokošolska 1. stopnje ipd.`,
+    - `Brez izobrazbe, nepopolna osnovnošolska`,
+    - `Nižja poklicna, srednja poklicna`,
+    - `Srednja strokovna, srednja splošna`,
+    - Regija
+  )
+
   
 # Branje tabele o deležu prebivalcev vsake regije, ki si lahko privoščijo počitnice
 zmoznost_pocitnikovanja_raw <- read_csv2(
@@ -61,9 +86,12 @@ zmoznost_pocitnikovanja <- zmoznost_pocitnikovanja_raw %>%
   pivot_longer(
     VEKTOR_LET,
     names_to='leto',
-    values_to='ideks_zmoznosti_pocitnikovanja', 
+    values_to='indeks-zmoznosti-pocitnikovanja', 
   ) %>% 
-  dplyr::select(-c(Regija))
+  mutate(
+    `delez-zmoznosti-pocitnikovanja` = `indeks-zmoznosti-pocitnikovanja` / 100
+  ) %>%
+  dplyr::select(-c(Regija, `indeks-zmoznosti-pocitnikovanja`))
 
 
 # Podatki o prebivalstvu o regijah. Popis števila prebivalstva poteka samo na 
@@ -83,7 +111,7 @@ prebivalstvo_po_regijah <- prebivalstvo_po_regijah_raw %>%
   pivot_longer(
     regije.slo$Regija,
     names_to='Regija',
-    values_to='prebivalstvo_po_regijah'
+    values_to='prebivalstvo'
   ) %>% left_join(
     regije.slo,
     by="Regija"
@@ -203,7 +231,8 @@ bolniski_stalez <- bolniski_stalez_raw %>%
   dplyr::select(-c(Regija))
 
 
-# Združevanje vseh podatkov skupno tabelo
+# Združevanje vseh podatkov skupno tabelo.
+# Bolniški stalež je opazovana spremenljivka, zato jo dam na konec.
 skupna_tabela <- izobrazba_po_regijah %>% left_join(
   zmoznost_pocitnikovanja,
   by = c("leto", "regija.oznaka")
@@ -226,8 +255,12 @@ skupna_tabela <- izobrazba_po_regijah %>% left_join(
   )  %>% left_join(
   prebivalstvo_po_regijah,
   by = c("leto", "regija.oznaka"),
+  default = -1
+) %>% relocate(
+  bolniski_stalez, .after = last_col()
+) %>% mutate(
+  across(leto, as.integer)
 )
-
 
 
 
