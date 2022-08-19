@@ -1,30 +1,23 @@
 # Analiza vpliva makroekonomskih kazalcev na trajanje bolniškega staleža v Sloveniji
 
 
-## Opis projekta
+## Tematika
 
-Skozi to seminarsko nalogo bom raziskoval ter analiziral povezavo med splošnim makroekonomskim stanjem v Sloveniji ter trajanjem bolniškega staleža glede na regije za leta 2008-2020. 
+Za projektno nalogo bom analiziral bolniški stalež v sloveniji med leti 2010-2020 - kateri življenjski dejavniki vplivajo na trajanje bolniškega staleža glede na dano regijo ter leto. 
 
-Za začetek bom kot edini makroekonomski kazalec vzel realno rast BDP-ja ter stopnjo brezposelnosti v Republiki Sloveniji, saj po mojem skupaj najbolje odražata makroekonomsko sliko po eni strani ter položaj delavcev na drugi.
+Za svojo analizo sem potreboval 6 tabel iz Sursa ter eno tabelo iz NIJZ-ja:
+1. Bolniški stalež po regijah
+2. Izobrazba po regijah
+3. Povprečna bruto plača po regijah
+4. Število prebivalcev po statističnih regijah
+5. Stopnja zelo nizke delovne intenzivnosti
+6. Stopnja brezposelnosti po statističnih regijah
+7. Delež zmožnosti gospodinjstva, da počitnikuje
 
-Za primerjavo sem vzel povprečni bolniški stalež po statističnih regijah in spolu od leta 2008 do 2020.
 
-## Podatki
-
-1. Kazalniki bolniškega staleža po statističnih regijah in spolu
-    1. Leto
-    2. Spol (moški/ ženska)
-    3. Regija
-    4. Izgubljeni koledarski dnevi na zaposlenega
-
-2. Stopnja brezposelnosti v Sloveniji
-    1. Leto
-    2. Regija
-    3. Stopnja brezposelnosti
-
-3. Realna rast GDP
-    1. Leto
-    2. Realna rast GDP
+## Skupna tabela
+Vse zgoraj navedene tabele sem združil v eno samo, ki vsebuje vse podatke, ki so bili nadaljnje uporabljeni v tem projektu.
+Atributi (stolpci) so: leto (integer), regija.oznaka (character), delež ljudi z visoko izobrazbo (double) ter delež ljudi z nizko (double), delež ljudi, ki so si zmožni privoščiti počitek (double), stopnja nizke delovne intenzivnosti(integer), povprečna bruto plača (integer), stopnja brezposelnosti (double), prebivalstvo (double) ter bolniški stalež (double).
 
 
 ## Program
