@@ -2,13 +2,46 @@
 
 source("lib/libraries.r")
 
-
-izobrazba_po_regijah <- read_excel(
-  "podatki/izobrazba-po-regijah.xlsx",
+regije.slo = tibble(
+  Regija = c(
+    "Gorenjska",
+    "Goriška",
+    "Jugovzhodna",
+    "Koroška",
+    "Obalno-kraška",
+    "Osrednjeslovenska",
+    "Podravska",
+    "Pomurska",
+    "Posavska",
+    "Primorsko-notranjska",
+    "Savinjska",
+    "Zasavska",
+    "SLOVENIJA"
+  ),
+  regija.oznaka = c(
+    "kr", "ng", "nm", "sg", "kp", "lj", "mb", "ms", "kk", "po", "ce", "za", "slo"
+  )
 )
+# Vektor let se pri združevanju pogosto ponavlja --> shranim ga v svojo spremenljivko
+VEKTOR_LET <- c('2011', '2012', '2013', '2014', '2015', '2016', '2017', '2018', '2019', '2020')
 
 
-zmoznost_pocitnikovanja <- read_csv2(
+# Branje tabele o izobrazbi po regijah
+izobrazba_po_regijah_raw <- read_excel(
+  "podatki/izobrazba-po-regijah.xlsx",
+  col_names = TRUE,
+) 
+
+izobrazba_po_regijah <- izobrazba_po_regijah_raw %>% 
+  dplyr::select(-Spol) %>%
+  left_join(
+    regije.slo,
+    by="Regija"
+  ) %>% 
+  dplyr::select(-c(Regija))
+  
+# Branje tabele o deležu prebivalcev vsake regije, ki si lahko privoščijo počitnice
+zmoznost_pocitnikovanja_raw <- read_csv2(
   "podatki/zmoznost-gospodinjstva-da-pocitnikuje.csv",
   col_names=TRUE,
   col_types= cols(
@@ -17,42 +50,109 @@ zmoznost_pocitnikovanja <- read_csv2(
     '2009' = col_skip(),
     '2010' = col_skip(),
   )
-)
+) 
 
-temp_tabela1 <- zmoznost_pocitnikovanja %>%
+zmoznost_pocitnikovanja <- zmoznost_pocitnikovanja_raw %>% 
+  dplyr::rename(Regija = statisticna_regija) %>%
+  left_join(
+    regije.slo,
+    by="Regija"
+  ) %>%
   pivot_longer(
-    c('2011', '2012', '2013', '2014', '2015', '2016', '2017', '2018', '2019', '2020'),
+    VEKTOR_LET,
     names_to='leto',
-    values_to='testna_meritev', 
+    values_to='ideks_zmoznosti_pocitnikovanja', 
+  ) %>% 
+  dplyr::select(-c(Regija))
+
+
+# Podatki o prebivalstvu o regijah. Popis števila prebivalstva poteka samo na 
+# vsake par let (tukaj imam podatke o letih 2011, 2015 ter 2018), zato bom
+# ob združevanju podatke za ostale leta ob danih regijah zanemaril
+prebivalstvo_po_regijah_raw <- read_csv2(
+  "podatki/prebivalstvo-po-regijah.csv",
+  skip=1,
+  col_types = cols(
+    .default = col_guess(),
+    SPOL = col_skip(),
+    LETO = col_character(),
   )
+) 
 
-
-stopnja_nizke_delovne_intenzivnosti <- read_csv2(
+prebivalstvo_po_regijah <- prebivalstvo_po_regijah_raw %>%
+  pivot_longer(
+    regije.slo$Regija,
+    names_to='Regija',
+    values_to='prebivalstvo_po_regijah'
+  ) %>% left_join(
+    regije.slo,
+    by="Regija"
+  ) %>% 
+  dplyr::select(-c(Regija)) %>%
+  dplyr::rename(leto = 'LETO')
+  
+# Stopnja prebivalstva z nizko delovno intenzivnostjo
+stopnja_nizke_delovne_intenzivnosti_raw <- read_csv2(
   "podatki/stopnja-zelo-nizke-delovne-intenzivnosti.csv",
   # skip=2
   col_names=TRUE,
   col_types = cols(
     .default = col_guess(),
     MERITVE = col_skip(),
+    LETO = col_character(),
   )
 )
 
-povprecna_bruto_placa <- read_csv2(
+stopnja_nizke_delovne_intenzivnosti <- stopnja_nizke_delovne_intenzivnosti_raw %>%
+  pivot_longer(
+    regije.slo$Regija,
+    names_to='Regija',
+    values_to='stopja_nizke_delovne_intenzivnosti'
+  ) %>% left_join(
+    regije.slo,
+    by="Regija"
+  ) %>% 
+  dplyr::select(-c(Regija)) %>%
+  dplyr::rename(leto = 'LETO')
+
+
+# Podatki o povprečni bruto plači
+povprecna_bruto_placa_raw <- read_csv2(
   "podatki/povprecna-bruto-placa-po-regijah.csv",
   col_names=TRUE,
   col_types = cols(
     .default = col_guess(),
     'PLAČA' = col_skip(),
-    # 'STATISTIČNA REGIJA' = col_skip(),
     'STAROST' = col_skip(),
     'SPOL' = col_skip(),
   )
 )
 
+# Opazim, da je ime prvega stolpca Regija, imena naslednjih pa so oblike:
+# P<crke> <leto> --> Iz tega pridobim leto
+regex_filter <- "P[:alpha:]+ "
+names(povprecna_bruto_placa_raw) <- str_replace(
+  names(povprecna_bruto_placa_raw),
+  regex_filter,
+  ""
+)
 
-stopnje_brezposelnosti <- read_csv(
+povprecna_bruto_placa <- povprecna_bruto_placa_raw %>% 
+  dplyr::rename(Regija = 'STATISTIČNA REGIJA') %>%
+  pivot_longer(
+    VEKTOR_LET,
+    names_to='leto',
+    values_to='povprecna_bruto_placa', 
+  )  %>% left_join(
+    regije.slo,
+    by="Regija"
+  ) %>% 
+  dplyr::select(-c(Regija))
+
+
+# Podatki o stopnji brezposelnosti
+stopnje_brezposelnosti_raw <- read_csv(
   "podatki/stopnje_brezposelnosti_po_regijah.csv",
-  locale = locale(encoding = "Windows-1250"),
   col_names=TRUE,
   col_types = cols(
     .default = col_guess(),
@@ -63,8 +163,23 @@ stopnje_brezposelnosti <- read_csv(
   )
 )
 
+stopnje_brezposelnosti <- stopnje_brezposelnosti_raw %>%
+  dplyr::rename(Regija = 'STATISTIČNA REGIJA') %>%
+  pivot_longer(
+    VEKTOR_LET,
+    names_to='leto',
+    values_to='stopnja_brezposelnosti', 
+  )  %>% left_join(
+    regije.slo,
+    by="Regija"
+  ) %>% 
+  dplyr::select(-c(Regija))
+
+
+# Podatki o številu dni, ki so jih prebivalci posamične statistične regije povprečno
+# preživeli na bolniški.
 # 14. vrstico izpustimo, saj za nas ni relevantna
-bolniski_stalez <- read_csv2(
+bolniski_stalez_raw <- read_csv2(
   "podatki/bolniski-stalez-po-regijah.csv",
   col_names=TRUE,
   col_types = cols(
@@ -75,123 +190,47 @@ bolniski_stalez <- read_csv2(
   skip_empty_rows = TRUE,
 )[-c(14), ]
 
+bolniski_stalez <- bolniski_stalez_raw %>%
+  dplyr::rename(Regija = 'Statistična regija') %>%
+  pivot_longer(
+    VEKTOR_LET,
+    names_to='leto',
+    values_to='bolniski_stalez', 
+  )  %>% left_join(
+    regije.slo,
+    by="Regija"
+  ) %>% 
+  dplyr::select(-c(Regija))
 
-dopolni_stolpec_spol <- function(spol) {
-  # Ker je tabela razdeljena glede na spol, vrednost atributa spol izgleda takole:
-  # spol = ["Moški", NA, NA, ..., NA, "Ženska", NA, NA, ..., NA]
-  # Tukaj to popravim na ["m", "m", ..., "m", "z", "z", ..., "z"]
-  # ter to vstavim nazaj v podatkovno tabelo
-  spol_trenutni = first(spol)
-  for (index in 1: 14) {
-    spol[index] = spol_trenutni
-  }
-  spol = sub("Moški", "m", spol)
-  spol_trenutni = nth(spol, 15)
-  for (index in 15: length(spol)) {
-    spol[index] = spol_trenutni
-  }
-  spol = sub("Ženske", "z", spol)
-  return(spol)
-}
 
-odstrani_vrstico_neznano <- function(df) {
-  # Dve vrstici zasedata vrednost pri regiji "neznano" ter za tem podatke tipa "NA".
-  # oznaka regije je zapisana pod vrednostjo 99, zato ti dve vrstici tukaj odstranim.
-  return (df[(df$`Oznaka regije` != 99), ])
-}
+# Združevanje vseh podatkov skupno tabelo
+skupna_tabela <- izobrazba_po_regijah %>% left_join(
+  zmoznost_pocitnikovanja,
+  by = c("leto", "regija.oznaka")
+  ) %>% 
+  left_join(
+    stopnja_nizke_delovne_intenzivnosti,
+    by = c("leto", "regija.oznaka")
+  ) %>% 
+  left_join(
+    povprecna_bruto_placa,
+    by = c("leto", "regija.oznaka")
+  ) %>% 
+  left_join(
+    stopnje_brezposelnosti,
+    by = c("leto", "regija.oznaka")
+  ) %>% 
+  left_join(
+    bolniski_stalez,
+    by = c("leto", "regija.oznaka")
+  )  %>% left_join(
+  prebivalstvo_po_regijah,
+  by = c("leto", "regija.oznaka"),
+)
 
-transformiraj_regije <- function(regije) {
-  for (i in 1:length(regije)) {
-    regije[i] = as.character(oznake_regij[regije[i]])
-  }
-  return (regije)
-}
 
-zlepi_dve_imeni_z_podcrtajem <- function(ime1, ime2) {
-  return (paste(ime1, ime2, sep="_"))
-}
 
-ustvari_nova_imena_letnic_v_tabeli <- function(df, dodana_pripona) {
-  imena_stolpev = colnames(df)
-  zacetno_leto = "2008"
-  zacetni_indeks_preimenovanja = match(zacetno_leto, imena_stolpev)
-  for (k in zacetni_indeks_preimenovanja:length(imena_stolpev)) {
-    imena_stolpev[k] = zlepi_dve_imeni_z_podcrtajem(dodana_pripona, imena_stolpev[k])
-  }
-  return (imena_stolpev)
-}
 
-preimenuj_letnice_v_tabeli <- function(df, dodana_pripona) {
-  colnames(df) = ustvari_nova_imena_letnic_v_tabeli(df, dodana_pripona)
-  return (df)
-}
-
-dobi_imena_novih_letnic <- function(df, dodana_pripona) {
-  imena_stolpcev = colnames(df)
-  zacetno_leto = "2008"
-  ime_stolpca_zacetnega_leta = zlepi_dve_imeni_z_podcrtajem(dodana_pripona, zacetno_leto)
-  zacetni_indeks = match(ime_stolpca_zacetnega_leta, imena_stolpcev)
-  return (imena_stolpcev[-1: -(zacetni_indeks-1)])
-}
-
-transformiraj_kazalnike_bolniskega_staleza <- function(
-  kazalniki_bolniskega_staleza) {
-  # kazalniki_bolniskega_staleza je specificna tabela, ki jo preberem iz podatkov
-  # To je zapakirano v funkciji zgolj zaradi preglednosti
-  # Ta metoda uporabi funkcionalnost zgornjih "helper" metod ter naredi sledece:
-  #   - Dopolne stolpec "spol"
-  #   - Odstrani odvečni dve vrstici pod vrednostjo "regija = neznano"
-  #   - Transformira stolpec "regija" (tretji stolpec v opazovani tabeli)
-  #   - Preimenuje stolpce, ki držijo vrednosti o časovnih komponentah
-  
-  spol = first(kazalniki_bolniskega_staleza)
-  kazalniki_bolniskega_staleza = kazalniki_bolniskega_staleza %>% mutate(
-    Spol = dopolni_stolpec_spol(spol))
-  kazalniki_bolniskega_staleza = odstrani_vrstico_neznano(kazalniki_bolniskega_staleza)
-  regije = nth(kazalniki_bolniskega_staleza, 3)
-  kazalniki_bolniskega_staleza = kazalniki_bolniskega_staleza %>% mutate(
-    Regija = transformiraj_regije(regije))
-  kazalniki_bolniskega_staleza = preimenuj_letnice_v_tabeli(
-    kazalniki_bolniskega_staleza, "stalez")
-  return (kazalniki_bolniskega_staleza)
-}
-
-transformiraj_brezposelnost_in_bdp_tabeli <- function(df, pripona) {
-  # To je funkcija, ki hkrati transformira tabeli brezposelnost_po_regijah
-  # bdp_po_regijah. 
-  # Ta metoda uporabi funkcionalnost zgornjih "helper" metod ter naredi sledece:
-  #   - preimenuje `STATISTICNA REGIJA` v 'Regija'
-  #   - Transformira stolpec "Regija" (2. stolpec v dani tabeli)
-  #   - Preimenuje stolpce, ki držijo vrednosti o časovnih komponentah
-  #     (tukaj uposteva atribut "pripona" v funkciji)
-  imena_stolpcev = colnames(df)
-  # `STATISTICNA REGIJA` je prvi stolpec v obeh tabelah
-  imena_stolpcev[1] = "Regija"
-  colnames(df) = imena_stolpcev
-  regije = first(df)
-  df = df %>% mutate(
-  Regija = transformiraj_regije(regije))
-  df = preimenuj_letnice_v_tabeli(
-    df, pripona)
-  return (df)
-}
-
-pofiltriraj_po_spolu <- function(kazalniki_bolniskega_staleza, oznaka_spola) {
-  # Pofiltrira tabelo kazalniki_bolniskega_staleza tako, da
-  # so po tem prikazani zgolj podatki o moskih
-  # ozaka_spola bo zasedala 2 vrednosti --> "m" ali "z"
-  kazalniki_bolniskega_staleza %>% filter(Spol == oznaka_spola)
-}
-
-dobi_ime_csv_datoteke <- function(ime_datoteke) {
-  return (paste(paste("uvoz", ime_datoteke, sep="/"), "csv", sep="."))
-}
-
-zapisi_v_csv <- function(df, ime_datoteke) {
-  # Zapise tabelo "df" v csv datoteko z imenom "ime_datoteke" znotraj folderja "uvoz/"
-  ime_csv_datoteke = dobi_ime_csv_datoteke(ime_datoteke)
-  df %>% write_csv(ime_csv_datoteke)
-}
 
 uvozi_zemljevid_specifikacija_parametrov <- function() {
   url = "https://kt.ijs.si/~ljupco/lectures/appr/zemljevidi/si/gadm36_SVN_shp.zip"
@@ -257,37 +296,6 @@ zapisi_regije_in_centroide <- function() {
   slo.regije.centroidi  %>% write_csv("zemljevidi/regije-centroidi.csv") 
 }
 
-kazalniki_bolniskega_staleza = transformiraj_kazalnike_bolniskega_staleza(
-  kazalniki_bolniskega_staleza
-)
-
-brezposelnost_po_regijah = transformiraj_brezposelnost_in_bdp_tabeli(
-  brezposelnost_po_regijah, "brezposelnost"
-)
-
-bdp_po_regijah = transformiraj_brezposelnost_in_bdp_tabeli(
-  bdp_po_regijah, "bdp"
-)
-
-kazalniki_bolniskega_staleza_moski = pofiltriraj_po_spolu(
-  kazalniki_bolniskega_staleza, "m"
-)
 
 
-kazalniki_bolniskega_staleza_zenske = pofiltriraj_po_spolu(
-  kazalniki_bolniskega_staleza, "z"
-)
-
-# Zapisovanje podatkov v csv datoteko.
-# Za to si pomagam z zgoraj definirano helper funkcijo "zapisi_v_csv" (ki si spet
-# pomaga z zgoraj definirano funkcijo "dobi_ime_csv_datoteke"
-# vse to shranim v folder "uvoz/"
-
-# Po potrebi ponovnega shranjevanja: Odkomentirajte spodnje vrstice kode
-
-# zapisi_v_csv(brezposelnost_po_regijah, "brezposelnost_po_regijah")
-# zapisi_v_csv(bdp_po_regijah, "bdp_po_regijah")
-# zapisi_v_csv(kazalniki_bolniskega_staleza_moski, "kazalniki_bolniskega_staleza_moski")
-# zapisi_v_csv(kazalniki_bolniskega_staleza_zenske, "kazalniki_bolniskega_staleza_zenske")
-# zapisi_v_csv(kazalniki_bolniskega_staleza, "kazalniki_bolniskega_staleza")
 
