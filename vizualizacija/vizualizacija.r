@@ -2,7 +2,79 @@
 
 source("lib/libraries.r")
 
-# Uvoz podatkov
+
+graf1 <- skupna_tabela %>% ggplot(
+  mapping = aes(
+    x = leto, 
+    y = bolniski_stalez_v_dnevih, 
+    color = `Oznaka regije`,
+  )
+) +
+  geom_line() +
+  scale_x_continuous(breaks= seq(2011, 2020, by=1)) + 
+  xlab('Leto') + 
+  ylab("Bolniški stalež (v dnevih)") +
+  ggtitle("Spreminjanje bolniškega staleža po slovenskih regijah skozi leta") + 
+  theme_light()
+
+
+graf21 <- skupna_tabela %>% 
+  group_by(`Oznaka regije`) %>% 
+  summarise(povprecni_bolniski_stalez=mean(bolniski_stalez_v_dnevih)) %>% 
+  ggplot(
+    aes(`Oznaka regije`, fill = povprecni_bolniski_stalez)
+  ) +
+  geom_bar(
+    aes(y=povprecni_bolniski_stalez),
+    stat='identity',
+  ) + 
+  theme_classic() +
+  xlab('') +
+  ggtitle("Povprečni bolniški stalež po regijah v letih 2011-2020") +
+  ylab("Povprečni bolniški stalež") +
+  guides(fill=guide_legend(title="Bolniški stalež"))
+
+graf22 <- skupna_tabela %>%
+  group_by(`Oznaka regije`) %>%
+  summarise(povprecna_bruto_placa_cez_leta=mean(povprecna_bruto_placa)) %>% 
+  ggplot(
+    aes(`Oznaka regije`, fill = povprecna_bruto_placa_cez_leta)
+  ) +
+  geom_bar(
+    aes(y=povprecna_bruto_placa_cez_leta),
+    stat='identity'
+  ) + 
+  theme_classic() +
+  xlab('') +
+  ggtitle("Povprečna bruto plača po regijah v letih 2011-2020") +
+  ylab("Povprečna bruto plača") +
+  guides(fill=guide_legend(title="Bruto plača"))
+
+g_graf21 <- ggplotGrob(graf21)
+g_graf22 <- ggplotGrob(graf22)
+maxWidth = grid::unit.pmax(g_graf21$widths[2:5], g_graf22$widths[2:5])
+g_graf21$widths[2:5] <- as.list(maxWidth)
+g_graf22$widths[2:5] <- as.list(maxWidth)
+graf2 <- grid.arrange(g_graf21, g_graf22, ncol=1)
+
+
+
+# facet_wrap
+# povprecna bruto placa && bolniski stalez; leto
+
+# x osi - regije
+
+# skupna_tabela %>% group_by(regija.oznaka) %>% summarise(povprecje=mean(bolniski_stalez))
+# npr. bar plot
+  
+# tocka-plot
+
+# Tak primer kot ga ima Pavla na grafu 1
+
+
+
+
+
 
 brezposelnost_po_regijah = read_csv("uvoz/brezposelnost_po_regijah.csv", col_names=TRUE)
 bdp_po_regijah = read_csv("uvoz/bdp_po_regijah.csv", col_names=TRUE)
