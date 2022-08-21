@@ -18,11 +18,11 @@ izseljevanje <- read_csv("podatki/izseljevanje.csv", na=":", col_select = c(1,2,
 smrtnost_novorojenckov <- read_csv("podatki/smrtnost_novorojenčkov.csv", na=":", col_select = c(1,2,5),
                                   locale=locale(encoding="Windows-1250")) %>% dplyr::rename(YEAR = TIME, COUNTRY = GEO, RATE = Value)
 st_ucenih_tj_jezikov <- read_csv("podatki/st_ucenih_tujih_jezikov.csv", na=":", col_select =c(1,2,4,5),
-                                locale=locale(encoding="Windows-1250")) %>% dplyr::rename(YEAR = TIME, COUNTRY = GEO, EDUCATION = ISCED11)
+                                locale=locale(encoding="Windows-1250")) %>% dplyr::rename(YEAR = TIME, COUNTRY = GEO, EDUCATION_LANG = ISCED11)
 st_obsojenih_zlocinov <- read_csv("podatki/stevilo_umorov_in_spolnih_zlorab.csv", na=":", col_select = c(1,2,3,7),
                                 locale=locale(encoding="Windows-1250")) %>% dplyr::rename(YEAR = TIME, COUNTRY = GEO, CRIME = ICCS)
 zaposljivost_mladih <- read_csv("podatki/zaposljivost_mladih.csv", na=":", col_select = c(1,2,3,6,7),
-                                locale=locale(encoding="Windows-1250")) %>% dplyr::rename(YEAR = TIME, COUNTRY = GEO, EDUCATION = ISCED11, RATE=Value)
+                                locale=locale(encoding="Windows-1250")) %>% dplyr::rename(YEAR = TIME, COUNTRY = GEO, EDUCATION_JOB = ISCED11, RATE=Value)
 bdp_na_prebivalca = read_csv("podatki/bdp_na_prebivalca.csv", na =":", col_select = c(1,2,5),
                              locale=locale(encoding="Windows-1250")) %>% dplyr::rename(YEAR = TIME, COUNTRY = GEO, GDP = Value)
 link <- "https://en.wikipedia.org/wiki/List_of_European_countries_by_area"
@@ -75,3 +75,4 @@ izseljevanje_2 = left_join(izseljevanje_2, zaposljivost_mladih, by = c("COUNTRY"
 priseljevanje_2 = left_join(priseljevanje, st_ucenih_tj_jezikov, by =  c("COUNTRY", "YEAR"))
 priseljevanje_2 = left_join(priseljevanje_2, st_obsojenih_zlocinov, by = c("COUNTRY", "YEAR"))
 priseljevanje_2 = left_join(priseljevanje_2, zaposljivost_mladih, by = c("COUNTRY", "YEAR", "SEX"))
+
