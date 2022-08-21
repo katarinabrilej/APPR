@@ -55,7 +55,6 @@ g_graf22 <- ggplotGrob(graf22)
 maxWidth = grid::unit.pmax(g_graf21$widths[2:5], g_graf22$widths[2:5])
 g_graf21$widths[2:5] <- as.list(maxWidth)
 g_graf22$widths[2:5] <- as.list(maxWidth)
-graf2 <- grid.arrange(g_graf21, g_graf22, ncol=1)
 
 
 
@@ -76,11 +75,6 @@ graf2 <- grid.arrange(g_graf21, g_graf22, ncol=1)
 
 
 
-brezposelnost_po_regijah = read_csv("uvoz/brezposelnost_po_regijah.csv", col_names=TRUE)
-bdp_po_regijah = read_csv("uvoz/bdp_po_regijah.csv", col_names=TRUE)
-kazalniki_bolniskega_staleza_moski = read_csv("uvoz/kazalniki_bolniskega_staleza_moski.csv", col_names=TRUE)
-kazalniki_bolniskega_staleza_zenske = read_csv("uvoz/kazalniki_bolniskega_staleza_zenske.csv", col_names=TRUE)
-kazalniki_bolniskega_staleza = read_csv("uvoz/kazalniki_bolniskega_staleza.csv", col_names=TRUE)
 
 slo.regije.centroidi = read_csv("zemljevidi/regije-centroidi.csv", col_names=TRUE)
 slo.regije.poligoni = read_csv("zemljevidi/regije-poligoni.csv", col_names=TRUE)
@@ -261,6 +255,6 @@ ustvari_graf3 <- function() {
 
 # Definicija grafov 1, 2 in 3
 
-g1 = ustvari_graf1()
-g2 = ustvari_graf2()
-g3 = ustvari_graf3()
+# g1 = ustvari_graf1()
+# g2 = ustvari_graf2()
+# g3 = ustvari_graf3()
