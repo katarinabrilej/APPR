@@ -57,6 +57,20 @@ g_graf21$widths[2:5] <- as.list(maxWidth)
 g_graf22$widths[2:5] <- as.list(maxWidth)
 
 
+graf3 <- skupna_tabela %>%
+  ggplot(
+    mapping = aes(
+      group = `Oznaka regije`,
+      x = `Oznaka regije`,
+      y = bolniski_stalez_v_dnevih,
+    )
+  ) + 
+  geom_boxplot() +
+  xlab("Regija") + 
+  ylab("Bolniški stalež") + 
+  theme_minimal()
+
+
 
 # facet_wrap
 # povprecna bruto placa && bolniski stalez; leto

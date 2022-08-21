@@ -58,11 +58,11 @@ grid.arrange(g_graf21, g_graf22, ncol=1)
 Pri tem grafu se osredotočimo na primerjavo med povprečnim bolniškim staležem ter povprečno bruto plačo v letih 2011-2020. Vidimo, da večinoma velja, da sta povprečna bruto plača ter povprečni bolniški stalež negativno korelirana - kadar je bolniški stalež visok, je povprečna bruto plača praviloma nižja. Kadar je povprečna bruto plača višja, je bolniški stalež praviloma nižji. Kot v prejšnem grafu pa spet lahko opazimo, da po nizkem bolniškem staležu izstopata Gorenjska (kr) in Osrednjeslovenska (lj), sledijo jim Primorsko-kraške pokrajine (ng, kp) ter nazadnje vzhodnoslovenske pokrajine (sg, kk, ms).
 
 
-```{r, fig.align='center'}
-
+```{r graf3, echo=FALSE, fig.align='center', fig.width = 12}
+graf3
 ```
 
-
+Še en dodaten način, kako lahko primerjamo bolniške staleže med regijami. Opazimo, da v tako kratkem času ne moremo ničesar sklepati o razpršenosti podaktov.
 
 ```{r, fig.align='center'}
 
