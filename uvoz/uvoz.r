@@ -18,7 +18,7 @@ regije.slo = tibble(
     "Zasavska",
     "SLOVENIJA"
   ),
-  regija.oznaka = c(
+  `Oznaka regije` = c(
     "kr", "ng", "nm", "sg", "kp", "lj", "mb", "ms", "kk", "po", "ce", "za", "slo"
   )
 )
@@ -223,7 +223,7 @@ bolniski_stalez <- bolniski_stalez_raw %>%
   pivot_longer(
     VEKTOR_LET,
     names_to='leto',
-    values_to='bolniski_stalez', 
+    values_to='bolniski_stalez_v_dnevih', 
   )  %>% left_join(
     regije.slo,
     by="Regija"
@@ -235,33 +235,33 @@ bolniski_stalez <- bolniski_stalez_raw %>%
 # Bolniški stalež je opazovana spremenljivka, zato jo dam na konec.
 skupna_tabela <- izobrazba_po_regijah %>% left_join(
   zmoznost_pocitnikovanja,
-  by = c("leto", "regija.oznaka")
+  by = c("leto", "Oznaka regije")
   ) %>% 
   left_join(
     stopnja_nizke_delovne_intenzivnosti,
-    by = c("leto", "regija.oznaka")
+    by = c("leto", "Oznaka regije")
   ) %>% 
   left_join(
     povprecna_bruto_placa,
-    by = c("leto", "regija.oznaka")
+    by = c("leto", "Oznaka regije")
   ) %>% 
   left_join(
     stopnje_brezposelnosti,
-    by = c("leto", "regija.oznaka")
+    by = c("leto", "Oznaka regije")
   ) %>% 
   left_join(
     bolniski_stalez,
-    by = c("leto", "regija.oznaka")
+    by = c("leto", "Oznaka regije")
   )  %>% left_join(
   prebivalstvo_po_regijah,
-  by = c("leto", "regija.oznaka"),
+  by = c("leto", "Oznaka regije"),
   default = -1
 ) %>% relocate(
-  bolniski_stalez, .after = last_col()
+  bolniski_stalez_v_dnevih, .after = last_col()
 ) %>% mutate(
-  across(leto, as.integer)
+  across(leto, as.double),
+  across(bolniski_stalez_v_dnevih, as.double),
 )
-
 
 
 
