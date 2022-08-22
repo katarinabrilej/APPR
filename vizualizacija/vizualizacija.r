@@ -115,3 +115,79 @@ graf22 = migracije %>% filter(SEX == "Total") %>% ggplot() + aes(x=COUNTRY, y=EM
 graf22 = migracije %>% filter(SEX == "Total") %>% ggplot() + aes(x=COUNTRY, y=IMMIGRATION) +geom_boxplot() +
   theme(axis.text.x = element_text(angle=45, vjust = 1, hjust = 1)) + labs(x="Države", y= "Izseljevanje",title="Število izseljenih iz držav")
 
+library(sp)
+library(rgdal)
+library(rgeos)
+library(raster)
+library(tidyverse)
+library(tmap)
+library(sf)
+library(rnaturalearth)
+library(rnaturalearthdata)
+library(rgeos)
+
+world <- ne_countries(scale = "medium", returnclass = "sf")
+Europe <- world[which(world$continent == "Europe"),] %>% dplyr::rename(COUNTRY = name)
+
+Europe$COUNTRY[Europe$COUNTRY == "Czech Rep."] = "Czechia"
+Europe$COUNTRY[Europe$COUNTRY == "Macedonia"] = "North Macedonia"
+
+colnames(migracije) = c("YEAR", "COUNTRY", "SEX", "EMIGRATION", "IMMIGRATION", "GDP", "AREA")
+
+mankajoce = data_frame(
+  YEAR = rep(NA,14*3),
+  COUNTRY = c(rep("Albania",3),
+              rep("Andorra",3),
+              rep("Bosnia and Herz.",3),
+              rep("Belarus",3),
+              rep("Kosovo",3),
+              rep("Monaco",3),
+              rep("Moldova",3),
+              rep("Malta",3),
+              rep("Montenegro",3),
+              rep("Russia",3),
+              rep("San Marino",3),
+              rep("Serbia",3),
+              rep("Ukraine",3),
+              rep("Vatican",3)),
+  EMIGRATION = rep(NA,42),
+  IMMIGRATION = rep(NA,42),
+  SEX = rep("Total",42),
+  GDP = rep(NA,14*3),
+  AREA = rep(NA,14*3)
+  
+)
+
+migracije_mankajoce = rbind(migracije, mankajoce)
+evropa_migracije = left_join(Europe, migracije_mankajoce, by= "COUNTRY")
+  
+zemljevid_priseljevanje = evropa_migracije %>% filter(SEX == "Total") %>% ggplot() +
+  geom_sf() +
+  coord_sf(xlim = c(-25,50), ylim = c(35,70), expand = FALSE) +
+  aes(fill = EMIGRATION)+
+  theme_classic() +
+  theme(
+    axis.line = element_blank(),
+    axis.ticks = element_blank(),
+    axis.text = element_blank(),
+    axis.title = element_blank()
+  ) +
+  labs(fill = "Priseljevanje") + ggtitle("Zemljevid preseljevanja v opazovane Evropske države") +
+  geom_sf_text(aes(label = COUNTRY), color = "gray", size = 2) +
+  scale_fill_viridis(option="G")
+
+zemljevid_izseljevanje = evropa_migracije %>% filter(SEX == "Total") %>% ggplot() +
+  geom_sf() +
+  coord_sf(xlim = c(-25,50), ylim = c(35,70), expand = FALSE) +
+  aes(fill = IMMIGRATION)+
+  theme_classic() +
+  theme(
+    axis.line = element_blank(),
+    axis.ticks = element_blank(),
+    axis.text = element_blank(),
+    axis.title = element_blank()
+  ) +
+  labs(fill = "Izseljevanje") + ggtitle("Zemljevid Izseljevanja v opazovane Evropske države") +
+  geom_sf_text(aes(label = COUNTRY), color = "gray", size = 2) +
+  scale_fill_viridis(option="G")
+
