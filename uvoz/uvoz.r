@@ -1,14 +1,5 @@
 # 2. faza: Uvoz podatkov
 
-library(knitr)
-library(readr)
-library(tibble)
-library(rvest)
-library(XML)
-library(methods)
-library(readxl)
-library(tidyverse)
-
 sl <- locale("sl", decimal_mark=",", grouping_mark=".")
 
 priseljevanje <- read_csv("podatki/priseljevanje.csv", na=":", col_select = c(1,2,6,7),

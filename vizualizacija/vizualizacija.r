@@ -1,7 +1,5 @@
 # 3. faza: Vizualizacija podatkov
 
-library(ggplot2)
-library(viridis)
 ##############
 graf1 = migracije %>% filter(SEX == "Total",) %>% ggplot() + aes(x=YEAR, y=EMIGRATION, color = COUNTRY) + geom_line() +
   xlab("Year") + ylab("Emigration") + theme(axis.text.x = element_text(angle=90)) +
@@ -114,17 +112,6 @@ graf22 = migracije %>% filter(SEX == "Total") %>% ggplot() + aes(x=COUNTRY, y=EM
 
 graf22 = migracije %>% filter(SEX == "Total") %>% ggplot() + aes(x=COUNTRY, y=IMMIGRATION) +geom_boxplot() +
   theme(axis.text.x = element_text(angle=45, vjust = 1, hjust = 1)) + labs(x="Države", y= "Izseljevanje",title="Število izseljenih iz držav")
-
-library(sp)
-library(rgdal)
-library(rgeos)
-library(raster)
-library(tidyverse)
-library(tmap)
-library(sf)
-library(rnaturalearth)
-library(rnaturalearthdata)
-library(rgeos)
 
 world <- ne_countries(scale = "medium", returnclass = "sf")
 Europe <- world[which(world$continent == "Europe"),] %>% dplyr::rename(COUNTRY = name)

@@ -1,12 +1,5 @@
 # 4. faza: Napredna analiza podatkov
 
-library(sp)
-library(rgdal)
-library(raster)
-library(rgeos)
-library(cluster)
-library(ggalt)
-
 #### dendogram
 set.seed(111)
 migracije %>% filter(SEX == "Total", YEAR == 2013) %>% ggplot() +
@@ -413,8 +406,7 @@ napaka_regresije = function(podatki, model) {
 }
 napaka_regresije(podatki.ucni, lin.model)
 
-library(ranger)
-library(janitor)
+
 p.ucni <- janitor::clean_names(podatki.ucni)
 set.seed(111)
 
@@ -465,8 +457,6 @@ ng.reg.model = p.ucni %>%ucenje(emigration ~ gdp +rate + value_x + value_y ,"ng"
 napaka_razvrscanja(p.ucni, ng.reg.model, "ng")
 
 formula3 = emigration ~ gdp + I(gdp^2) + I(gdp^3) +rate + I(rate^2) + I(rate^3) + value_x + I(value_x^2) + I(value_x^3) +  value_y + I(value_y^2) + I(value_y^3)
-
-library(iml)
 
 X = p.ucni %>% dplyr :: select(emigration, gdp,rate, value_x, value_y)
 
@@ -526,5 +516,4 @@ napoved_graf <- ggplot(CACs2) + geom_bar(aes(x = YEAR, y = EMIGRATION, fill = YE
   scale_fill_manual(name = 'Napovedi', values = setNames(c("#53B400",'midnight blue'),c(T, F))) +
   xlab('Leto') + ylab('Priseljevanje') + ggtitle("Napoved priseljevanja v Nemčijo v letih 2020-2024")
 
-print(napoved_graf)
 
