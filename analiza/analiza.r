@@ -325,19 +325,206 @@ priseljevanje_bdp = priseljevanje_bdp[,-c(11,13)]
 
 podatki.ucni = priseljevanje_bdp %>% 
   filter(YEAR == 2019, SEX == "Total", EDUCATION_LANG == "Upper secondary education - general", CRIME == "Intentional homicide", EDUCATION_JOB == "All ISCED 2011 levels")
+podatki.ucni = podatki.ucni[-c(1,7,8,10,12,21,28,30),]
 
 g <- ggplot(podatki.ucni, aes(x=RATE, y=EMIGRATION)) + geom_point()
 g + geom_smooth(method="lm")
 
-lin.model = lm(data = podatki.ucni, EMIGRATION ~ Value.x + Value.y + RATE + GDP )
-lin.model
-napovedi = predict(lin.model)
+lmodel = lm(data = podatki.ucni, EMIGRATION ~ Value.x + RATE + GDP )
+lmodel
+napovedi = predict(lmodel)
 print(napovedi)
 
 kv = lm(data = podatki.ucni, EMIGRATION ~ I(Value.x^2) + I(Value.y^2) + RATE + I(GDP^2))
-mls = loess(data = podatki.ucni, EMIGRATION ~ Value.x + Value.y + RATE + GDP )
+mls = loess(data = podatki.ucni, EMIGRATION ~ Value.x + RATE + GDP )
 
 sapply(list(lin.model, kv, mls), function(x) mean((x$residuals^2)))
 
+formula1 = EMIGRATION ~ GDP + RATE +Value.x
 
+napaka.cv = function(podatki, k, formula) {
+  n = nrow(podatki)
+  r = sample(1:n)
+  
+  razrez = cut(1:n, k, labels = FALSE)
+  
+  razbitje = split(r, razrez)
+  
+  pp.napovedi = rep(0, n)
+  for (i in 1:length(razbitje)) {
+    #Naučimo se modela na množici S/Si
+    model = podatki[ -razbitje[[i]], ] %>% lm(formula = formula)
+    #Naučen model uporabimo za napovedi na Si
+    pp.napovedi[ razbitje[[i]] ] = predict(object = model, newdata = podatki[ razbitje [[i]], ] )
+    
+  }
+  
+  #model so učni podatki in ostalo ( razbitje[[i]]) so testni podatki. 
+  
+  napaka = mean((pp.napovedi - podatki$EMIGRATION)^2)
+  return(napaka)
+}
+
+set.seed(111)
+napaka.cv(podatki.ucni, 5, formula1)
+
+
+formule = c(
+  EMIGRATION ~  GDP + RATE + Value.x,
+  EMIGRATION ~  GDP + I(RATE^2) + I(Value.x^2),
+  EMIGRATION ~  GDP + RATE,
+  EMIGRATION ~  GDP + I(GDP^2) + RATE + I(Value.x^2),
+  EMIGRATION ~  GDP + I(GDP^2) + RATE + I(RATE^2)+ Value.x + I(Value.x^2),
+  EMIGRATION ~  GDP + I(GDP^2) + I(GDP^3) + RATE + I(RATE^2) + I(RATE^3) + Value.x + I(Value.x^2) + I(Value.x^3),
+  EMIGRATION ~  GDP + I(GDP^2) + I(GDP^3) + I(GDP^4) + RATE + I(RATE^2) + I(RATE^3)+ I(RATE^4) + Value.x + I(Value.x^2) + I(Value.x^3) + I(Value.x^4),
+  EMIGRATION ~  GDP + I(GDP^2) + I(GDP^3) + I(GDP^4) + I(GDP^5) + RATE + I(RATE^2) + I(RATE^3)+ I(RATE^4) + I(RATE^5) + Value.x + I(Value.x^2) + I(Value.x^3) + I(Value.x^4) + I(Value.x^5),
+  EMIGRATION ~  GDP + I(GDP^2) + RATE + I(RATE^2),
+  EMIGRATION ~  GDP + I(GDP^2) + I(GDP^3) + RATE + I(RATE^2) + I(RATE^3) ,
+  EMIGRATION ~  GDP + I(GDP^2) + I(GDP^3) + I(GDP^4) + RATE + I(RATE^2) + I(RATE^3)+ I(RATE^4),
+  EMIGRATION ~  GDP + I(GDP^2) + I(GDP^3) + I(GDP^4) + I(GDP^5) + RATE + I(RATE^2) + I(RATE^3)+ I(RATE^4) + I(RATE^5)
+)
+
+napake = rep(0,12)
+for (i in 1:12){
+  formula = formule[[i]]
+  set.seed(111)
+  napaka = napaka.cv(podatki.ucni, 5, formula)
+  napake[i] = napaka
+}
+
+which.min(napake)
+
+formula2=EMIGRATION ~  GDP + I(RATE^2) + I(Value.x^2) ####ima najmanjšo napako
+set.seed(111)
+napaka.cv(podatki.ucni, 5, formula2)
+
+lin.model=lm(data=podatki.ucni, formula = formula2)
+
+napaka_regresije = function(podatki, model) {
+  set.seed(111)
+  podatki %>%
+    bind_cols(EMIGRATION.hat = predict(model, podatki)) %>%
+    mutate(
+      izguba = (EMIGRATION - EMIGRATION.hat) ^ 2
+    ) %>%
+    select(izguba) %>%
+    unlist() %>%
+    mean()
+}
+napaka_regresije(podatki.ucni, lin.model)
+
+library(ranger)
+library(janitor)
+p.ucni <- janitor::clean_names(podatki.ucni)
+set.seed(111)
+
+ucenje = function(podatki, formula, algoritem) {
+  switch(
+    algoritem,
+    lin.reg = lm(formula, data = podatki),
+    ng = ranger(formula, data = podatki)
+  )
+}
+
+napovedi = function(podatki, model, algoritem) {
+  switch(
+    algoritem,
+    lin.reg = predict(model, podatki),
+    ng = predict(model, podatki)$predictions
+  )
+}
+
+napaka_regresije = function(podatki, model, algoritem) {
+  podatki %>%
+    bind_cols(emigration.hat = napovedi(podatki, model, algoritem)) %>%
+    mutate(
+      izguba = (emigration - emigration.hat) ^ 2
+    ) %>%
+    dplyr::select(izguba) %>%
+    unlist() %>%
+    mean()
+}
+
+napaka_razvrscanja = function(podatki, model, algoritem) {
+  podatki %>%
+    bind_cols(emigration.hat = napovedi(podatki, model, algoritem)) %>%
+    mutate(
+      izguba = (emigration != emigration.hat)
+    ) %>%
+    dplyr::select(izguba) %>%
+    unlist() %>%
+    mean()
+}
+
+set.seed(111)
+lin.model = p.ucni %>% ucenje(emigration ~ gdp + I(gdp^2) + I(gdp^3) +rate + I(rate^2) + I(rate^3) + value_x + I(value_x^2) + I(value_x^3) +  value_y + I(value_y^2) + I(value_y^3) ,"lin.reg")
+napaka_regresije(p.ucni, lin.model, "lin.reg")
+
+set.seed(111)
+ng.reg.model = p.ucni %>%ucenje(emigration ~ gdp +rate + value_x + value_y ,"ng")
+napaka_razvrscanja(p.ucni, ng.reg.model, "ng")
+
+formula3 = emigration ~ gdp + I(gdp^2) + I(gdp^3) +rate + I(rate^2) + I(rate^3) + value_x + I(value_x^2) + I(value_x^3) +  value_y + I(value_y^2) + I(value_y^3)
+
+library(iml)
+
+X = p.ucni %>% dplyr :: select(emigration, gdp,rate, value_x, value_y)
+
+set.seed(111)
+pfun = function(model, newdata) {
+  predict(model, data = newdata, predict.all = FALSE)$predictions
+}  
+
+ng.reg.pred = Predictor$new(
+  ng.reg.model,
+  data = X, y = p.ucni$emigration,
+  predict.fun = pfun
+)
+
+ng.reg.moci = FeatureImp$new(ng.reg.pred, loss = "mse")
+
+plot(ng.reg.moci)
+
+############
+
+ger = priseljevanje_bdp %>% 
+  filter(COUNTRY == "Germany", SEX == "Total", CRIME == "Intentional homicide", EDUCATION_LANG == "Upper secondary education - general", EDUCATION_JOB == "All ISCED 2011 levels")
+
+
+CAC = ger[,4]
+CACs = ger[,c(1,4)]
+
+
+Lag <- function(x, n){
+  (c(rep(NA, n), x)[1 : length(x)] )
+}
+naredi.df <- function(x){data.frame(EMIGRATION = x,
+                                    EMIGRATION1 = Lag(x, 1),
+                                    EMIGRATION2 = Lag(x, 2) ,
+                                    EMIGRATION3 = Lag(x, 3),
+                                    EMIGRATION4 = Lag(x, 4)
+)
+}
+set.seed(111)
+df = naredi.df(CAC$EMIGRATION)
+model.bi = ranger(EMIGRATION ~ EMIGRATION1 +EMIGRATION2 + EMIGRATION3 + EMIGRATION4, data=df %>% drop_na())
+
+nap = nrow(df)
+for (i in 1:5){
+  set.seed(111)
+  df <- naredi.df(c(df$EMIGRATION, NA))
+  napoved = predict(model.bi,  data = df[nap + i, ] )$predictions
+  df[nap+i, 1] = napoved
+}
+
+napovedi = df[c(9,9,10,11,13), 1]
+CACs2 <- CACs
+CACs2[c( 9, 10, 11, 12,13),2] = napovedi
+CACs2[c(9, 10, 11, 12,13),1] = c(2020, 2021, 2022, 2023, 2024)
+
+napoved_graf <- ggplot(CACs2) + geom_bar(aes(x = YEAR, y = EMIGRATION, fill = YEAR > 2019), stat = "identity") +
+  scale_fill_manual(name = 'Napovedi', values = setNames(c("#53B400",'midnight blue'),c(T, F))) +
+  xlab('Leto') + ylab('Priseljevanje') + ggtitle("Napoved priseljevanja v Nemčijo v letih 2020-2024")
+
+print(napoved_graf)
 
