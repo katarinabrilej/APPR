@@ -2,60 +2,63 @@
 
 ##############
 graf1 = migracije %>% filter(SEX == "Total",) %>% ggplot() + aes(x=YEAR, y=EMIGRATION, color = COUNTRY) + geom_line() +
-  xlab("Year") + ylab("Emigration") + theme(axis.text.x = element_text(angle=90)) +
+  xlab("Leto") + ylab("Priseljevanje") + theme(axis.text.x = element_text(angle=45, vjust = 1, hjust = 1)) +
   ggtitle("Število ljudi, ki se je v letih preselilo v opazovane države") + labs(color = "Države v katere so se ljudje selili")
 
 graf2 =  migracije %>% filter(SEX == "Total") %>% ggplot() + aes(x=YEAR, y=IMMIGRATION, color = COUNTRY) + geom_line() +
-  xlab("Year") + ylab("Immigration") + theme(axis.text.x = element_text(angle=90)) +
+  xlab("Leto") + ylab("Izseljevanje") + theme(axis.text.x = element_text(angle=45, vjust = 1, hjust = 1)) +
   ggtitle("Število ljudi, ki se je v letih preselilo iz opazovanih držav") + labs(color = "Države iz katerih so se ljudje selili")
 
 graf3 = migracije %>% filter(YEAR==2009, SEX == "Total") %>% ggplot(mapping=aes(group=COUNTRY, x = COUNTRY, y=EMIGRATION, color = GDP)) + geom_point() +
-  xlab("Country") + ylab("Emigration") + theme(axis.text.x = element_text(angle=90)) + 
+  xlab("Države") + ylab("Priseljevanje") + theme(axis.text.x = element_text(angle=45, vjust = 1, hjust = 1)) + 
   ggtitle("Število ljudi, ki se je v letu 2009 preselilo v opazovane države") + labs(color = "BDP države na prebivalca")
 
 graf4 = migracije %>% filter(YEAR==2009, SEX == "Total") %>% ggplot(mapping=aes(group=COUNTRY, x = COUNTRY, y=IMMIGRATION, color = GDP)) + geom_point() +
-  xlab("Country") + ylab("Immigration") + theme(axis.text.x = element_text(angle=90)) + 
+  xlab("Države") + ylab("Izseljevanje") + theme(axis.text.x = element_text(angle=45, vjust = 1, hjust = 1)) + 
   ggtitle("Število ljudi, ki se je v letu 2009 preselilo iz opazovanih držav") + labs(color = "BDP države na prebivalca")
 
 graf5 = migracije %>% ggplot() + aes(x = YEAR, y = EMIGRATION, color = SEX) + geom_line() +
-  xlab("Year") + ylab("Emigration") + facet_wrap(. ~ COUNTRY) + theme(axis.text.x = element_text(angle=90)) + 
+  xlab("Leto") + ylab("Priseljevanje") + facet_wrap(. ~ COUNTRY) + theme(axis.text.x = element_text(angle=90)) + 
   ggtitle("Število ljudi, ki se je v letih preselilo v opazovane države po spolih") + labs(color = "Spol")
 
 graf6 = migracije %>% ggplot() + aes(x = YEAR, y = IMMIGRATION, color = SEX) + geom_line() +
-  xlab("Year") + ylab("Imigration") + facet_wrap(. ~ COUNTRY) + theme(axis.text.x = element_text(angle=90)) + 
+  xlab("Leto") + ylab("Izseljevanje") + facet_wrap(. ~ COUNTRY) + theme(axis.text.x = element_text(angle=90)) + 
   ggtitle("Število ljudi, ki se je v letih preselilo iz opazovanih držav po spolih") + labs(color = "Spol")
 
 #########
 
 graf7 = priseljevanje_2 %>% filter(SEX == "Total", EDUCATION_LANG == "Upper secondary education", EDUCATION_JOB == "All ISCED 2011 levels", CRIME == "Rape") %>% ggplot() + aes(x = YEAR, y=EMIGRATION, color = Value.x) + geom_point() +
-  xlab("Year") + ylab("Emigration") + facet_wrap(. ~ COUNTRY) + theme(axis.text.x = element_text(angle=45)) + labs(color = "Povprečno število učenih tujih jezikov na drugi stopnji izobrazbe")+
-  ggtitle("Število ljudi, ki se je preselilo v državo s povprečnim številom učenih tujih jezikov na tretji stopnji izobrazbe") + scale_color_viridis(option = "G")
+  xlab("Leto") + ylab("Priseljevanje") + facet_wrap(. ~ COUNTRY) + theme(axis.text.x = element_text(angle=45)) + labs(color = "Število učenih tujih jezikov")+
+  ggtitle("Priseljevanje s številom učenih tujih jezikov na tretji stopnji izobrazbe") + scale_color_viridis(option = "G")
 
 graf8 = izseljevanje_2 %>% filter(SEX == "Total", EDUCATION_LANG == "Upper secondary education", EDUCATION_JOB == "All ISCED 2011 levels", CRIME == "Rape") %>% ggplot() + aes(x = YEAR, y=IMMIGRATION, color = Value.x) + geom_point() +
-  xlab("Year") + ylab("Emigration") + facet_wrap(. ~ COUNTRY) + theme(axis.text.x = element_text(angle=45)) + labs(color = "Povprečno število učenih tujih jezikov na drugi stopnji izobrazbe")+
-  ggtitle("Število ljudi, ki se je izselilo iz države s povprečnim številom učenih tujih jezikov na tretji stopnji izobrazbe") + scale_color_viridis(option = "G")
+  xlab("Leto") + ylab("Izseljevanje") + facet_wrap(. ~ COUNTRY) + theme(axis.text.x = element_text(angle=45)) + labs(color = "Povprečno število učenih tujih jezikov na višji drugi stopnji izobrazbe")+
+  ggtitle("Število ljudi, ki se je izselilo iz države s povprečnim številom učenih tujih jezikov na višji drugi stopnji izobrazbe") + scale_color_viridis(option = "G")
 
 graf14 = priseljevanje_2 %>% filter(SEX == "Total", EDUCATION_LANG == "Primary education", EDUCATION_JOB == "All ISCED 2011 levels", CRIME == "Rape") %>% ggplot() + aes(x = YEAR, y=EMIGRATION, color = Value.x) + geom_line() +
-  xlab("Year") + ylab("Emigration") + facet_wrap(. ~ COUNTRY) + theme(axis.text.x = element_text(angle=45)) + labs(color = "Povprečno število učenih tujih jezikov na drugi stopnji izobrazbe")+
-  ggtitle("Število ljudi, ki se je preselilo v državo s povprečnim številom učenih tujih jezikov na prvi stopnji izobrazbe") + scale_color_viridis(option = "G")
+  xlab("Leto") + ylab("Priseljevanje") + facet_wrap(. ~ COUNTRY) + theme(axis.text.x = element_text(angle=45)) + labs(color = "Povprečno število učenih tujih jezikov na prvi stopnji izobrazbe")+
+  ggtitle("Število ljudi, ki se je priselilo v državo s povprečnim številom učenih tujih jezikov na prvi stopnji izobrazbe") + scale_color_viridis(option = "G")
 
 graf15 = izseljevanje_2 %>% filter(SEX == "Total", EDUCATION_LANG == "Primary education", EDUCATION_JOB == "All ISCED 2011 levels", CRIME == "Rape") %>% ggplot() + aes(x = YEAR, y=IMMIGRATION, color = Value.x) + geom_line() +
-  xlab("Year") + ylab("Emigration") + facet_wrap(. ~ COUNTRY) + theme(axis.text.x = element_text(angle=45)) + labs(color = "Povprečno število učenih tujih jezikov na prvi stopnji izobrazbe")+
+  xlab("Leto") + ylab("Izseljevanje") + facet_wrap(. ~ COUNTRY) + theme(axis.text.x = element_text(angle=45)) + labs(color = "Povprečno število učenih tujih jezikov na prvi stopnji izobrazbe")+
   ggtitle("Število ljudi, ki se je izselilo iz države s povprečnim številom učenih tujih jezikov na prvi stopnji izobrazbe") + scale_color_viridis(option = "G")
+
 
 ########
 
 graf9 = migracije %>% filter(SEX == "Females") %>% group_by(COUNTRY) %>% summarise(EMIGRATION_AY = sum(EMIGRATION)) %>% ggplot() + aes(x = COUNTRY, y = EMIGRATION_AY) + 
-  geom_bar(stat = "identity") + xlab("Country") + ylab("Emigration all years") +
+  geom_bar(stat = "identity") + xlab("Države") + ylab("Priseljevanje vsa leta") +
   theme(axis.text.x = element_text(angle=90)) + ggtitle("Skupno število žensk, ki se je preselilo v posamezne države")
 
 graf10 = migracije %>% filter(SEX == "Females") %>% group_by(COUNTRY) %>% summarise(IMMIGRATION_AY = sum(IMMIGRATION)) %>% ggplot() + aes(x = COUNTRY, y = IMMIGRATION_AY) + 
-  geom_bar(stat = "identity") + xlab("Country") + ylab("Immigration all years") +
+  geom_bar(stat = "identity") + xlab("Države") + ylab("Izseljevanje vsa leta") +
   theme(axis.text.x = element_text(angle=90)) + ggtitle("Skupno število žensk, ki se je preselilo iz posameznih držav")
 
 graf11 = migracije %>% filter(SEX == "Total") %>% group_by(COUNTRY, YEAR) %>% summarise(razlika = EMIGRATION - IMMIGRATION) %>% 
-  ggplot() + aes(x = YEAR, y = razlika, color = COUNTRY) + geom_line() + xlab("Year") + ylab("Difference") + ggtitle("Razlika med priseljevanjem in izseljevanjem") + 
-  facet_wrap(. ~ COUNTRY)
+  ggplot() + aes(x = YEAR, y = razlika, color = COUNTRY) + geom_line() + xlab("Leto") + ylab("Razlika") + ggtitle("Razlika med priseljevanjem in izseljevanjem") + 
+  facet_wrap(. ~ COUNTRY) + theme(legend.position = "none") 
+
+
 
 ########
 
@@ -66,23 +69,25 @@ priseljevanje_2 = left_join(priseljevanje_2,stevilo_zlocinov, by=c("COUNTRY", "Y
 #######
 
 graf12 = izseljevanje_2 %>% filter(SEX == "Total", YEAR == 2015, EDUCATION_JOB=="All ISCED 2011 levels", EDUCATION_LANG =="Primary education", CRIME =="Rape") %>% ggplot() + aes(x=COUNTRY, y = CRIME.NO, fill = IMMIGRATION) + geom_bar(stat = "identity") +
-  theme(axis.text.x = element_text(angle=45, vjust = 1, hjust = 1)) + labs(x = "Države", y = "Število zločinov", title="Število zločinov v državah s številom ljudi, ki so se preselili iz držav v letu 2015", fill = "Izseljevanje") + 
+  theme(axis.text.x = element_text(angle=45, vjust = 1, hjust = 1)) + labs(x = "Države", y = "Število zločinov", title="Število zločinov v državah s številom ljudi, ki so se izselili v letu 2015", fill = "Izseljevanje") + 
   scale_fill_viridis(option="G")
 
 graf13 = priseljevanje_2 %>% filter(SEX == "Total", YEAR == 2015, EDUCATION_JOB=="All ISCED 2011 levels", EDUCATION_LANG =="Primary education", CRIME =="Rape") %>% ggplot() + aes(x=COUNTRY, y = CRIME.NO, fill = EMIGRATION) + geom_bar(stat = "identity") +
-  theme(axis.text.x = element_text(angle=45, vjust = 1, hjust = 1)) + labs(x = "Države", y = "Število zločinov", title="Število zločinov v državah s številom ljudi, ki so se preselili v države v letu 2015", fill ="Priseljevanje") + 
+  theme(axis.text.x = element_text(angle=45, vjust = 1, hjust = 1)) + labs(x = "Države", y = "Število zločinov", title="Število zločinov v državah s številom ljudi, ki so se izselili v letu 2015", fill ="Priseljevanje") + 
   scale_fill_viridis(option="G")
 
 ######
 graf16 = priseljevanje_2 %>% filter(SEX == "Males", YEAR == 2013, EDUCATION_JOB == "All ISCED 2011 levels", EDUCATION_LANG=="Primary education", CRIME == "Rape") %>% 
   ggplot() + aes(x = COUNTRY, y = EMIGRATION, color = RATE) + geom_point()+
-  theme(axis.text.x = element_text(angle=45, vjust = 1, hjust = 1)) + labs(x="Države", y= "Priseljevanje", color = "Stopnja zaposljivosti mladih", title= "Priseljevanje moških v države v letu 2013 s stopnjo zaposljivosti mladih s končanimi vsemi stopnjami izobrazbe") +
-  scale_color_viridis(option="G")
+  theme(axis.text.x = element_text(angle=45, vjust = 1, hjust = 1)) + labs(x="Države", y= "Priseljevanje", color = "Stopnja zaposljivosti mladih", title= "Priseljevanje moških v letu 2013 z zaposljivostjo mladih z vsemi stopnjami izobrazbe") +
+  scale_color_viridis(option="G") 
+
 
 graf17 = izseljevanje_2 %>% filter(SEX == "Males", YEAR == 2013, EDUCATION_JOB == "All ISCED 2011 levels", EDUCATION_LANG=="Primary education", CRIME == "Rape") %>% 
   ggplot() + aes(x = COUNTRY, y = IMMIGRATION, color = RATE) + geom_point()+
-  theme(axis.text.x = element_text(angle=45, vjust = 1, hjust = 1)) + labs(x="Države", y= "Izseljevanje", color = "Stopnja zaposljivosti mladih", title= "Izseljevanje moških iz držav v letu 2013 s stopnjo zaposljivosti mladih s končanimi vsemi stopnjami izobrazbe") +
+  theme(axis.text.x = element_text(angle=45, vjust = 1, hjust = 1)) + labs(x="Države", y= "Izseljevanje", color = "Stopnja zaposljivosti mladih", title= "Izseljevanje moškihv letu 2013 z zaposljivostjo mladih s končanimi vsemi stopnjami izobrazbe") +
   scale_color_viridis(option="G")
+
 
 ######
 graf18 = priseljevanje_2 %>% filter(SEX == "Females", YEAR == 2015, EDUCATION_JOB == "Less than primary, primary and lower secondary education (levels 0-2)", EDUCATION_LANG=="Primary education", CRIME == "Rape") %>% 
@@ -96,14 +101,14 @@ graf19 = izseljevanje_2 %>% filter(SEX == "Females", YEAR == 2015, EDUCATION_JOB
   scale_color_viridis(option="G")
 
 ###
-graf20 = priseljevanje_2 %>% filter(SEX == "Females", YEAR == 2008, EDUCATION_JOB == "Less than primary, primary and lower secondary education (levels 0-2)", EDUCATION_LANG=="Primary education", CRIME == "Rape") %>% 
+graf20 = priseljevanje_2 %>% filter(SEX == "Females", YEAR == 2008, EDUCATION_JOB == "Less than primary, primary and lower secondary education (levels 0-2)", CRIME == "Rape") %>% 
   ggplot() + aes(x = COUNTRY, y = EMIGRATION, color = Value.y) + geom_point()+
-  theme(axis.text.x = element_text(angle=45, vjust = 1, hjust = 1)) + labs(x="Države", y= "Priseljevanje", color = "Stopnja zaposljivosti mladih", title= "Priseljevanje žensk v države v letu 2008 s številom obsojevih posisltev") +
+  theme(axis.text.x = element_text(angle=45, vjust = 1, hjust = 1)) + labs(x="Države", y= "Priseljevanje", color = "Število obsojenih posilstev", title= "Priseljevanje žensk v države v letu 2008 s številom obsojevih posisltev") +
   scale_color_viridis(option="G")
 
-graf21 = izseljevanje_2 %>% filter(SEX == "Females", YEAR == 2008, EDUCATION_JOB == "Less than primary, primary and lower secondary education (levels 0-2)", EDUCATION_LANG=="Primary education", CRIME == "Rape") %>% 
+graf21 = izseljevanje_2 %>% filter(SEX == "Females", YEAR == 2008, EDUCATION_JOB == "Less than primary, primary and lower secondary education (levels 0-2)", CRIME == "Rape") %>% 
   ggplot() + aes(x = COUNTRY, y = IMMIGRATION, color = Value.y) + geom_point()+
-  theme(axis.text.x = element_text(angle=45, vjust = 1, hjust = 1)) + labs(x="Države", y= "Izseljevanje", color = "Stopnja zaposljivosti mladih", title= "Izseljevanje žensk iz držav v letu 2008 s številom obsojenih posilstev") +
+  theme(axis.text.x = element_text(angle=45, vjust = 1, hjust = 1)) + labs(x="Države", y= "Izseljevanje", color = "Število obsojenih posilstev", title= "Izseljevanje žensk iz držav v letu 2008 s številom obsojenih posilstev") +
   scale_color_viridis(option="G")
 
 ####
@@ -160,7 +165,7 @@ zemljevid_priseljevanje = evropa_migracije %>% filter(SEX == "Total") %>% ggplot
     axis.title = element_blank()
   ) +
   labs(fill = "Priseljevanje") + ggtitle("Zemljevid preseljevanja v opazovane Evropske države") +
-  geom_sf_text(aes(label = COUNTRY), color = "gray", size = 2) +
+  geom_sf_text(aes(label = COUNTRY), color = "gray", size = 3) +
   scale_fill_viridis(option="G")
 
 zemljevid_izseljevanje = evropa_migracije %>% filter(SEX == "Total") %>% ggplot() +
@@ -174,7 +179,7 @@ zemljevid_izseljevanje = evropa_migracije %>% filter(SEX == "Total") %>% ggplot(
     axis.text = element_blank(),
     axis.title = element_blank()
   ) +
-  labs(fill = "Izseljevanje") + ggtitle("Zemljevid Izseljevanja v opazovane Evropske države") +
-  geom_sf_text(aes(label = COUNTRY), color = "gray", size = 2) +
+  labs(fill = "Izseljevanje") + ggtitle("Zemljevid izseljevanja v opazovane Evropske države") +
+  geom_sf_text(aes(label = COUNTRY), color = "gray", size = 3) +
   scale_fill_viridis(option="G")
 

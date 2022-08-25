@@ -1,6 +1,7 @@
 # 4. faza: Napredna analiza podatkov
 
 #### dendogram
+
 set.seed(111)
 migracije %>% filter(SEX == "Total", YEAR == 2013) %>% ggplot() +
   geom_point(
@@ -19,11 +20,11 @@ dendogram1 = primeri[,-1] %>% dist() %>% hclust(method = "ward.D")
 razdalje = dist(primeri[,-1])
 drzave = unlist(primeri[,1])
 
-narisan_dendogram = plot(
-  dendogram1,
-  label = primeri$COUNTRY,
-  ylab = "višina",
-  main = NULL)
+#narisan_dendogram = plot(
+ # dendogram1,
+ # label = primeri$COUNTRY,
+#  ylab = "višina",
+#  main = NULL)
 
 hc.kolena = function(dendrogram, od = 1, do = NULL, eps = 0.5) {
   # število primerov in nastavitev parametra do
@@ -56,7 +57,7 @@ hc.kolena = function(dendrogram, od = 1, do = NULL, eps = 0.5) {
 hc.kolena.k = function(k.visina) {
   k.visina %>%
     filter(koleno) %>%
-    select(k) %>%
+    dplyr::select(k) %>%
     unlist() %>%
     as.character() %>%
     as.integer()
@@ -64,6 +65,7 @@ hc.kolena.k = function(k.visina) {
 
 # izračunamo tabelo s koleni za dendrogram
 r1 = hc.kolena(dendogram1)
+
 
 # narišemo diagram višin združevanja
 diagram.kolena = function(k.visina) {
@@ -275,7 +277,7 @@ skupine = primeri[, -1] %>%
   hclust(method = "ward.D") %>%
   cutree(k = k) %>%
   as.ordered()
-diagram.skupine(drzave.x.y, drzave.x.y$drzava, skupine, k)
+#diagram.skupine(drzave.x.y, drzave.x.y$drzava, skupine, k)
 
 k = obrisi.k(r.km)
 set.seed(111) # ne pozabimo na ponovljivost rezultatov
@@ -298,7 +300,9 @@ diagram.skupine2 = function(podatki, oznake, skupine, k) {
     geom_point() +
     geom_label(label = oznake, size = 2) +
     scale_color_hue() +
-    theme_classic()
+    theme_classic()+
+    xlab("Priseljevanje") +
+    ylab("BDP na prebivalca")
   
   for (i in 1:k) {
     d = d + geom_encircle(
@@ -309,29 +313,29 @@ diagram.skupine2 = function(podatki, oznake, skupine, k) {
   d
 }
 
-diagram.skupine2(drzave.x.y, drzave.x.y$drzava, skupine, k)
+skupine2 = diagram.skupine2(drzave.x.y, drzave.x.y$drzava, skupine, k)
 
 ######################
+
 priseljevanje_bdp = left_join(priseljevanje_2, migracije)
-priseljevanje_bdp = priseljevanje_bdp[,-c(11,13)]
+priseljevanje_bdp = priseljevanje_bdp[,-c(11,14)]
 
 
 podatki.ucni = priseljevanje_bdp %>% 
   filter(YEAR == 2019, SEX == "Total", EDUCATION_LANG == "Upper secondary education - general", CRIME == "Intentional homicide", EDUCATION_JOB == "All ISCED 2011 levels")
 podatki.ucni = podatki.ucni[-c(1,7,8,10,12,21,28,30),]
 
-g <- ggplot(podatki.ucni, aes(x=RATE, y=EMIGRATION)) + geom_point()
-g + geom_smooth(method="lm")
+graf_regresija = ggplot(podatki.ucni, aes(x=RATE, y=EMIGRATION)) + geom_point() + xlab("Stopnja zaposljivosti mladih") + ylab("Priseljevanje")
+graf_regresija = graf_regresija + geom_smooth(method="lm")
 
 lmodel = lm(data = podatki.ucni, EMIGRATION ~ Value.x + RATE + GDP )
 lmodel
 napovedi = predict(lmodel)
-print(napovedi)
 
 kv = lm(data = podatki.ucni, EMIGRATION ~ I(Value.x^2) + I(Value.y^2) + RATE + I(GDP^2))
 mls = loess(data = podatki.ucni, EMIGRATION ~ Value.x + RATE + GDP )
 
-sapply(list(lin.model, kv, mls), function(x) mean((x$residuals^2)))
+sapply(list(lmodel, kv, mls), function(x) mean((x$residuals^2)))
 
 formula1 = EMIGRATION ~ GDP + RATE +Value.x
 
@@ -400,7 +404,7 @@ napaka_regresije = function(podatki, model) {
     mutate(
       izguba = (EMIGRATION - EMIGRATION.hat) ^ 2
     ) %>%
-    select(izguba) %>%
+    dplyr::select(izguba) %>%
     unlist() %>%
     mean()
 }
@@ -472,8 +476,7 @@ ng.reg.pred = Predictor$new(
 )
 
 ng.reg.moci = FeatureImp$new(ng.reg.pred, loss = "mse")
-
-plot(ng.reg.moci)
+graf_vpliv = plot(ng.reg.moci)
 
 ############
 

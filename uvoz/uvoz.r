@@ -19,7 +19,7 @@ bdp_na_prebivalca = read_csv("podatki/bdp_na_prebivalca.csv", na =":", col_selec
 link <- "https://en.wikipedia.org/wiki/List_of_European_countries_by_area"
 stran <- html_session(link) %>% read_html()
 velikost_drzav <- stran %>% html_nodes(xpath="//table[@class='wikitable sortable']") %>%
-  .[[1]] %>% html_table(dec=",") %>% select(c(2,3)) %>% dplyr::rename(COUNTRY = State)
+  .[[1]] %>% html_table(dec=",") %>% dplyr::select(c(2,3)) %>% dplyr::rename(COUNTRY = State)
 
 smrtnost_novorojenckov$YEAR = as.integer(smrtnost_novorojenckov$YEAR)
 st_obsojenih_zlocinov$YEAR = as.integer(st_obsojenih_zlocinov$YEAR)
