@@ -73,28 +73,105 @@ graf3 <- skupna_tabela %>%
 
 
 
-
-
-# facet_wrap
 # povprecna bruto placa && bolniski stalez; leto
 
 # x osi - regije
 
-# skupna_tabela %>% group_by(regija.oznaka) %>% summarise(povprecje=mean(bolniski_stalez))
-# npr. bar plot
-  
+
 # tocka-plot
 
 # Tak primer kot ga ima Pavla na grafu 1
 
-skupna_tabela %>%
+
+graf4 <- skupna_tabela %>%
   ggplot(
-    mapping = aes(
-      x = 
+    aes(
+      x=`delez-zmoznosti-pocitnikovanja`, 
+      y=bolniski_stalez_v_dnevih,
+      colour=leto,
+      )
+  ) +
+  geom_point() +
+  facet_wrap(. ~`Oznaka regije`, ncol=3) +
+  stat_smooth(method = lm) +
+  theme_bw() +
+  xlab("Delež gospodinjstev, ki si je sposoben privoščiti počitnice") +
+  ylab("Bolniški stalež") +
+  ggtitle("Delež gospodinjstev, ki so si sposobni privoščiti počitnice po regijah")
+
+
+regije_po_stopnji_izobrazbe <- skupna_tabela %>% 
+  group_by(`Oznaka regije`) %>% 
+  summarise(
+    povprecni_delez_visoke_izobrazbe=mean(`delez-visoke-izobrazbe`),
+    povprecni_delez_nizke_izobrazbe=mean(`delez-nizke-izobrazbe`),
+    ) %>%
+  pivot_longer(
+    c(2, 3),
+    names_to="type",
+    values_to="value"
+  ) %>% mutate_if(is.numeric, round, 2)
+
+
+graf5 <- regije_po_stopnji_izobrazbe %>%
+  ggplot(
+    mapping = aes(x = `Oznaka regije`, y = value, fill = type)
+  ) +
+  geom_bar(width = 1, stat = 'identity', color = "black", ylim = c(0, 0.4)) +
+  geom_text(aes(label=value), position = position_stack(vjust = 0.5), color="black") +
+  scale_y_continuous(breaks= seq(0, 1, by=0.05)) + 
+  scale_fill_manual(
+    values=c("#D3D3D3", "#63666A"), 
+    labels=c(
+      'Povprečni delež nizke izobrazbe', 
+      'Povprečni delež visoke izobrazbe'
+      )
+    ) +
+  theme_minimal() +
+  xlab("Oznaka regije") +
+  ylab("Delež visoke oz. nizke izobrazbe po regijah") +
+  ggtitle("Primerjava povprečne višine izobrazbe med regijami v letih 2011-2020") +
+  guides(fill=guide_legend(title="Legenda"))
+
+
+
+graf61 <- regije_po_stopnji_izobrazbe %>%
+  dplyr::filter(`Oznaka regije`=="kr") %>%
+  ggplot(
+    mapping = aes(x = `Oznaka regije`, y = value, fill = type)
+  ) +
+  geom_bar(width = 1, stat = 'identity', color="black") +
+  geom_text(aes(label=value), position = position_stack(vjust = 0.5), color="black") +
+  coord_polar("y", start=0) + 
+  ggtitle("Stopnja izobrazbe na Gorenjskem") + 
+  xlab('') + 
+  ylab('') + 
+  scale_fill_manual(
+    values=c("#999999", "#56B4E9"),
+    labels=c(
+      'Povprečni delež nizke izobrazbe', 
+      'Povprečni delež visoke izobrazbe'
     )
-  )
+    ) +
+  theme(legend.position = "none", axis.text = element_blank(), axis.ticks = element_blank(), panel.grid = element_blank())
 
 
+graf62 <- regije_po_stopnji_izobrazbe %>%
+  dplyr::filter(`Oznaka regije`=="sg") %>%
+  ggplot(
+    mapping = aes(x = `Oznaka regije`, y = value, fill = type)
+  ) +
+  geom_bar(width = 1, stat = 'identity', color="black") +
+  geom_text(aes(label=value), position = position_stack(vjust = 0.5), color="black") +
+  coord_polar("y", start=0) + 
+  ggtitle("Stopnja izobrazbe na Koroškem") + 
+  xlab('') + 
+  ylab('') + 
+  scale_fill_manual(
+    values=c("#999999", "#56B4E9"),
+
+    ) +
+  theme(legend.position = "none", axis.text = element_blank(), axis.ticks = element_blank(), panel.grid = element_blank())
 
 
 

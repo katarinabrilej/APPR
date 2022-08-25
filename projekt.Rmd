@@ -45,7 +45,7 @@ Vsaka meritev v tabeli je lahko identificirana z danim letom ter regijo.
 source("vizualizacija/vizualizacija.r", encoding="UTF-8")
 ```
 
-```{r graf1, echo=FALSE, fig.align='center', fig.height = 7}
+```{r graf1, echo=FALSE, fig.align='center', fig.height = 5, fig.width = 12}
 graf1
 ```
 
@@ -66,10 +66,31 @@ graf3
 
 Ogledal sem si SURS-ov indeks nizke delovne intenzivnosti po regijah. Pri najnižjih so Pomurska (po), Obalno-Kraška (kp), Goriška (ng), Gorenjska (kr) ter Osrednjeslovenska (lj). Omeniti gre, so to (razen Pomurske) regije, ki so prav tako najbolj zdrave (oz. regije z najnižjim bolniškim staležem), kar nakazuje na povezavo bolniškega staleža in delovne intenzivnosti. Na drugem koncu imajo regije Posavska (kk), Koroška (sg), Podravska (mb) ter Zasavska (za) najvišjo stopnje delovne intenzivnosti. iz grafa 2 lahko preberemo, da so to prav tako regije z najvišjim bolniškim staležem.
 
-```{r, fig.align='center'}
-
+```{r graf4, echo=FALSE, fig.align='center', fig.width = 12, fig.height =10}
+graf4
 ```
 
+Naslednji podatek, s katerim sem primerjal povezanost z bolniškim staležem je delež gospodinjstev, ki si je sposoben privoščiti počitnice. Le-tega sem analiziral tako, da sem grafe ločil na posamezne regije, bolniški stalež primerjal po regijah ter za vsako regijo pobarval meritev glede na leto. 
+
+Iz tega grafa se da razbrati več stvari hkrati - prvo, če pogledamo graf, ki nakazuje slovensko povprečje, si je manj gospodinjstev lahko privoščilo počitnice v letih 2011, 2012, 2013 ter 2014, kot v letih bližje letu 2020. Sklepam, da v glavnem zaradi ekonomske krize leta 2012 ter ekonomske okrepitve Slovenije v poznejših letih. To praviloma velja za vse slovenske regije - svetlejše pikice, ki nakazujejo poznejše leto, imajo višjo vrednost bolniškega staleža kot temnejše pikice.
+
+Naslenje opažanje bi bilo, da imajo gospodinjstva iz zahodnih slovenskih regij (kr, lj, kp, ng) praviloma večjo zmožnost počitnikovanja kot vzhodne slovenske regije (ms, sg, za, ...). Prav regije višjim prej omenjenim indeksom pa imajo prav tako nižji bolniški stalež, kar nakazuje na povezanost deleža zmožnosti počitnikovanja ter bolniškega staleža. 
+
+```{r graf5, echo=FALSE, fig.align='center', fig.width = 14, fig.height =7}
+graf5
+```
+
+Oglejmo si, katera regija ima v letih 2011-2020 povprečno najvišjo stopnjo izobrazbe. Pri obdelavi podatkov sem kot visoko izobrazbo štel ljudi z opravljeno višješolsko ter visokošolsko izobrazbo,
+kot nizko izobrazbo pa ljudi, ki višješolske oz. visokošolske izobrazbe (še) nimajo. Vidimo lahko, da Osrednjeslovenska (lj), Gorenjska (kr) ter Obalno-kraška (kp) ležijo nas slovenskim povprečjem,
+medtek ko pa so Pomurska (ms), Koroška (sg), Zasavska (za) ter Posavska (kk) slovenske regije z najnižjo stopnjo visoke izobrazbe.
+
+Dodatno se posvetim Gorenjski ter Koroški regiji, regiji z zaporedno najnižjim ter najvišjim bolniškim staležem, kot je razvidno iz grafa 2.
+
+```{r graf6, echo=FALSE, fig.align='center', fig.width = 12, fig.height =10}
+grid.arrange(graf61, graf62, ncol=2)
+```
+
+Vidimo lahko, da ima Gorenjska regija občutno višjo visoko stopnjo izobrazbe kot Koroška.
 
 
 ***
