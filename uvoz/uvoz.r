@@ -264,13 +264,13 @@ skupna_tabela <- izobrazba_po_regijah %>% left_join(
 )
 
 
-
+# Tu obdelam podatke za analizo za zemljevidih
 uvozi_zemljevid_specifikacija_parametrov <- function() {
   url = "https://kt.ijs.si/~ljupco/lectures/appr/zemljevidi/si/gadm36_SVN_shp.zip"
   ime.zemljevida = "gadm36_SVN_1"
   pot.zemljevida = ""
   mapa = "zemljevidi"
-  encoding = "Windows-1250"
+  encoding = "utf-8"
   force = FALSE
   slo.regije.sp = uvozi.zemljevid(url, ime.zemljevida, pot.zemljevida, mapa, encoding, force)
   slo.regije.map = slo.regije.sp %>% spTransform(CRS("+proj=longlat +datum=WGS84")) # pretvorimo v ustrezen format
@@ -278,6 +278,7 @@ uvozi_zemljevid_specifikacija_parametrov <- function() {
 }
 
 izdelaj_zemljevid_slovenije_poligoni <- function() {
+  
   slo.regije.map = uvozi_zemljevid_specifikacija_parametrov()
   slo.regije.poligoni = fortify(slo.regije.map)
   slo.regije.poligoni = slo.regije.poligoni %>%
@@ -289,12 +290,18 @@ izdelaj_zemljevid_slovenije_poligoni <- function() {
     ) %>%
     mutate(
       regija = replace(regija, regija == "Notranjsko-kraška", "Primorsko-notranjska"),
-      regija = replace(regija, regija == "Spodnjeposavska", "Posavska")
+      regija = replace(regija, regija == "Spodnjeposavska", "Posavska"),
+      regija = replace(regija, regija == "Jugovzhodna Slovenija", "Jugovzhodna")
+    ) %>%
+    dplyr::rename(Regija=regija) %>%
+    left_join(
+      regije.slo,
     )
   return (slo.regije.poligoni)
 }
 
 izdelaj_zemljevid_slovenije_centroidi <- function() {
+  
   slo.regije.map = uvozi_zemljevid_specifikacija_parametrov()
   slo.regije.centroidi = slo.regije.map %>% coordinates %>% as.data.frame
   colnames(slo.regije.centroidi) = c("long", "lat")
@@ -309,26 +316,18 @@ izdelaj_zemljevid_slovenije_centroidi <- function() {
     ) %>%
     mutate(
       regija = replace(regija, regija == "Notranjsko-kraška", "Primorsko-notranjska"),
-      regija = replace(regija, regija == "Spodnjeposavska", "Posavska")
+      regija = replace(regija, regija == "Spodnjeposavska", "Posavska"),
+      regija = replace(regija, regija == "Jugovzhodna Slovenija", "Jugovzhodna")
+    ) %>%
+    dplyr::rename(Regija=regija) %>%
+    left_join(
+      regije.slo,
     )
   return (slo.regije.centroidi)
 }
 
-# Če želiš zemljevid shraniti še enkrat, pokliči metodo zapisi_regije_in_centroide
+# Shranjevanje podatkov o zemljevidu
 zapisi_regije_in_centroide <- function() {
-  # Zapiše poligone in centroide v folder zemljevid.
-  # Tukaj predpostavljam, da je pri poganjanju tega trenutni direktorij
-  # nastavljen na root projekta.
-  slo.regije.poligoni = izdelaj_zemljevid_slovenije_poligoni()
-  slo.regije.poligoni = slo.regije.poligoni %>% mutate(
-    Regija = transformiraj_regije(regije))
-  slo.regije.centroidi = izdelaj_zemljevid_slovenije_centroidi()
-  slo.regije.centroidi = slo.regije.centroidi %>% mutate(
-    Regija = transformiraj_regije(regije))
-  slo.regije.poligoni  %>% write_csv("zemljevidi/regije-poligoni.csv")
-  slo.regije.centroidi  %>% write_csv("zemljevidi/regije-centroidi.csv") 
+  izdelaj_zemljevid_slovenije_poligoni() %>% write_csv("zemljevidi/regije-poligoni.csv")
+  izdelaj_zemljevid_slovenije_centroidi() %>% write_csv("zemljevidi/regije-centroidi.csv")
 }
-
-
-
-
