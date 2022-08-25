@@ -111,7 +111,7 @@ Države sem razdelil v skupine glede na podobnosti v priseljevanje in BDP na pre
 skupine2
 ```
 
-Z napredno analizo sem analiziral podatke o priseljevanju glede na BDP na prebivalca, povprečno število učenih tujih jezikov na višji drugi stopnji izobraževanja, število namernih umorov ter zaposljivost mladih s končanimi vsemi stopnjami izobraževanja. Najprej sem naredil graf z linearno regresijo, kjer vidimo, da pričakujemo padec števila priseljevanj.
+Z napredno analizo sem analiziral podatke o priseljevanju glede na BDP na prebivalca, povprečno število učenih tujih jezikov na višji drugi stopnji izobraževanja, število namernih umorov ter zaposljivost mladih s končanimi vsemi stopnjami izobraževanja. Najprej sem naredil graf z linearno regresijo, kjer vidimo, da je v letu 2019 z višjo stopnjo zaposljivosti mladih priseljevanje padalo, kar je v nasprotju s pričakovanji.
 ```{r graf_regresija, echo=FALSE, fig.align='center', fig.height = 7, message = FALSE}
 graf_regresija
 ```
