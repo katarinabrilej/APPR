@@ -92,6 +92,11 @@ grid.arrange(graf61, graf62, ncol=1)
 
 Vidimo lahko, da ima Gorenjska regija občutno višjo visoko stopnjo izobrazbe kot Koroška.
 
+```{r graf7, echo=FALSE, fig.align='center', fig.width = 12, fig.height =10}
+graf7
+```
+
+Na zadnjem grafu pri vizualizacijah pa si oglejmo še povprečni bolniški stalež v letih 2011-2020 na zemljevidu.
 
 ***
 
