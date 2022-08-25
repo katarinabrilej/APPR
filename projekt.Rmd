@@ -109,13 +109,22 @@ source("analiza/analiza.r", encoding="UTF-8")
 Pri napovedovanju podatkov sem začel z linearno regresijo - in sicer sem si izbral Gorenjsko, regijo
 z najnižjim bolniškim staležem ter sem poskušal napovedati bolniški stalež v letih 2021, 2022, 2023, 2024 in 2025.
 
-```{r graf8, echo=FALSE, fig.align='center', fig.width = 12, fig.height =10}
+```{r graf8, echo=FALSE, fig.align='center', fig.width = 12, fig.height =5}
 graf8
 ```
 
+Modra povezana črta nakazuje do sedaj izmerjen bolniški stalež na Gorenjskem, črna pa linearna premica,
+ki napoveduje podatke v letih 2021, 2022, 2023, 2024 in 2025.
+
+Nazadnje sem regije poskusil razporediti glede na to podobnost vseh nabranih podatkov.
+Po metodi k-tih voditeljev (podrobnejša razlaga, kako točno, je v file-u analiza.r) pridemo do tega, da je optimalno število skupin 2. Regije sem pobarval po skupinah ter jih označil na zemljevidu Slovenije.
+
+```{r graf9, echo=FALSE, fig.align='center', fig.width = 12, fig.height =5}
+graf9
+```
 
 ***
-
+ 
 ## Zaključek
 
 
