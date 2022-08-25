@@ -143,7 +143,7 @@ graf61 <- regije_po_stopnji_izobrazbe %>%
   geom_bar(width = 1, stat = 'identity', color="black") +
   geom_text(aes(label=value), position = position_stack(vjust = 0.5), color="black") +
   coord_polar("y", start=0) + 
-  ggtitle("Stopnja izobrazbe na Gorenjskem") + 
+  ggtitle("Stopnja visoke oz. nizke izobrazbe na Gorenjskem") + 
   xlab('') + 
   ylab('') + 
   scale_fill_manual(
@@ -153,7 +153,7 @@ graf61 <- regije_po_stopnji_izobrazbe %>%
       'Povprečni delež visoke izobrazbe'
     )
     ) +
-  theme(legend.position = "none", axis.text = element_blank(), axis.ticks = element_blank(), panel.grid = element_blank())
+  theme(axis.text = element_blank(), axis.ticks = element_blank(), panel.grid = element_blank())
 
 
 graf62 <- regije_po_stopnji_izobrazbe %>%
@@ -164,21 +164,38 @@ graf62 <- regije_po_stopnji_izobrazbe %>%
   geom_bar(width = 1, stat = 'identity', color="black") +
   geom_text(aes(label=value), position = position_stack(vjust = 0.5), color="black") +
   coord_polar("y", start=0) + 
-  ggtitle("Stopnja izobrazbe na Koroškem") + 
+  ggtitle("Stopnja visoke oz. nizke izobrazbe  na Koroškem") + 
   xlab('') + 
   ylab('') + 
   scale_fill_manual(
     values=c("#999999", "#56B4E9"),
-
+    labels=c(
+      'Povprečni delež nizke izobrazbe', 
+      'Povprečni delež visoke izobrazbe'
+    )
     ) +
-  theme(legend.position = "none", axis.text = element_blank(), axis.ticks = element_blank(), panel.grid = element_blank())
-
-
+  theme(axis.text = element_blank(), axis.ticks = element_blank(), panel.grid = element_blank())
 
 
 
 slo.regije.centroidi = read_csv("zemljevidi/regije-centroidi.csv", col_names=TRUE)
 slo.regije.poligoni = read_csv("zemljevidi/regije-poligoni.csv", col_names=TRUE)
+
+
+graf = kazalniki_bolniskega_staleza %>%
+  ggplot(
+    mapping = aes(x = Regija, y = stalez_2008)
+  ) + geom_line(
+    color = 'grey70',
+    size = 1.5
+  ) + 
+  geom_point(
+    colour = 'grey20',
+    size = 3,
+  ) +
+  theme_classic() + ylim(8, 27)
+
+
 
 # Helper funkcije za graf 1
 
@@ -353,9 +370,8 @@ ustvari_graf3 <- function() {
   nrow=1)
   )
 }
-
 # Definicija grafov 1, 2 in 3
 
 # g1 = ustvari_graf1()
 # g2 = ustvari_graf2()
-# g3 = ustvari_graf3()
+g3 = ustvari_graf3()

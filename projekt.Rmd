@@ -87,7 +87,7 @@ medtek ko pa so Pomurska (ms), Koroška (sg), Zasavska (za) ter Posavska (kk) sl
 Dodatno se posvetim Gorenjski ter Koroški regiji, regiji z zaporedno najnižjim ter najvišjim bolniškim staležem, kot je razvidno iz grafa 2.
 
 ```{r graf6, echo=FALSE, fig.align='center', fig.width = 12, fig.height =10}
-grid.arrange(graf61, graf62, ncol=2)
+grid.arrange(graf61, graf62, ncol=1)
 ```
 
 Vidimo lahko, da ima Gorenjska regija občutno višjo visoko stopnjo izobrazbe kot Koroška.
