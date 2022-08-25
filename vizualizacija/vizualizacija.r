@@ -17,10 +17,11 @@ graf1 <- skupna_tabela %>% ggplot(
   ggtitle("Spreminjanje bolniškega staleža po slovenskih regijah skozi leta") + 
   theme_light()
 
-
-graf21 <- skupna_tabela %>% 
+povprecni_bolniski_stalez <- skupna_tabela %>% 
   group_by(`Oznaka regije`) %>% 
-  summarise(povprecni_bolniski_stalez=mean(bolniski_stalez_v_dnevih)) %>% 
+  summarise(povprecni_bolniski_stalez=mean(bolniski_stalez_v_dnevih))
+
+graf21 <- povprecni_bolniski_stalez %>% 
   ggplot(
     aes(`Oznaka regije`, fill = povprecni_bolniski_stalez)
   ) +
@@ -70,17 +71,6 @@ graf3 <- skupna_tabela %>%
   ylab("Stopnja nizke delovne intenzivnosti po regijah") + 
   ggtitle("Stopnja nizke delovne intenzivnosti") +
   theme_minimal()
-
-
-
-# povprecna bruto placa && bolniski stalez; leto
-
-# x osi - regije
-
-
-# tocka-plot
-
-# Tak primer kot ga ima Pavla na grafu 1
 
 
 graf4 <- skupna_tabela %>%
@@ -182,18 +172,31 @@ slo.regije.centroidi = read_csv("zemljevidi/regije-centroidi.csv", col_names=TRU
 slo.regije.poligoni = read_csv("zemljevidi/regije-poligoni.csv", col_names=TRUE)
 
 
-graf = kazalniki_bolniskega_staleza %>%
-  ggplot(
-    mapping = aes(x = Regija, y = stalez_2008)
-  ) + geom_line(
-    color = 'grey70',
-    size = 1.5
-  ) + 
-  geom_point(
-    colour = 'grey20',
-    size = 3,
+
+
+slo.regije.poligoni %>%
+  left_join(
+    
+  )
+  ggplot() +
+  geom_polygon(
+    mapping = aes(long, lat, group = group),
+    color = "grey",
+    fill = "white"
   ) +
-  theme_classic() + ylim(8, 27)
+  coord_map() +
+  geom_text(
+    data = slo.regije.centroidi,
+    mapping = aes(x = long, y = lat, label = regija),
+    size = 3
+  ) +
+  theme_classic() +
+  theme(
+    axis.line = element_blank(),
+    axis.ticks = element_blank(),
+    axis.text = element_blank(),
+    axis.title = element_blank()
+  )
 
 
 
