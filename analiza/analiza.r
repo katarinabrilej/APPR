@@ -2,91 +2,51 @@
 
 source("lib/libraries.r")
 
-# Uvoz podatkov
+# Z linearno regresijo napovedujem, kakšen bo bolniški stalež v prihodnjih letih na Gorenjskem
 
-brezposelnost_po_regijah = read_csv("uvoz/brezposelnost_po_regijah.csv", col_names=TRUE)
-bdp_po_regijah = read_csv("uvoz/bdp_po_regijah.csv", col_names=TRUE)
-kazalniki_bolniskega_staleza_moski = read_csv("uvoz/kazalniki_bolniskega_staleza_moski.csv", col_names=TRUE)
-kazalniki_bolniskega_staleza_zenske = read_csv("uvoz/kazalniki_bolniskega_staleza_zenske.csv", col_names=TRUE)
-kazalniki_bolniskega_staleza = read_csv("uvoz/kazalniki_bolniskega_staleza.csv", col_names=TRUE)
+lin_regresija_podatki <- skupna_tabela %>%
+  filter(`Oznaka regije` == "kr")
 
-slo.regije.centroidi = read_csv("zemljevidi/regije-centroidi.csv", col_names=TRUE)
-slo.regije.poligoni = read_csv("zemljevidi/regije-poligoni.csv", col_names=TRUE)
-
-
-# Helper funkcije
-
-dobi_seznam_regij <- function() {
-  # kazalniki_bolniskega_staleza predstavlja eno od sledečih tabel:
-  # - kazalniki_bolniskega_staleza
-  # - kazalniki_bolniskega_staleza_moski
-  # - kazalniki_bolniskega_staleza_zenske
-  return ((kazalniki_bolniskega_staleza_moski %>% filter(Regija != 'slo'))$Regija)
-}
-
-pripravi_podatke_za_kmeans_analizo <- function(df) {
-  # Da bom lahko naredil prostorsko analizo po tem, stran vržem podatke o Sloveniji
-  kazalniki_bolniskega_staleza_brez_slovenije = kazalniki_bolniskega_staleza_moski%>% 
-    filter(Regija != 'slo')
-  # Shranim seznam regij
-  seznam_regij = kazalniki_bolniskega_staleza_brez_slovenije$Regija
-  # Odvržem kategorične podatke --> metoda voditeljev deluje zgolj z numeričnimi podatki
-  kazalniki_bolniskega_staleza_za_analizo = kazalniki_bolniskega_staleza_brez_slovenije %>% 
-    dplyr::select(-Regija, -'Oznaka regije', -Spol) 
-  kazalniki_bolniskega_staleza_skalirani = kazalniki_bolniskega_staleza_za_analizo %>% scale()
-  rownames(kazalniki_bolniskega_staleza_skalirani) = seznam_regij
-  return (kazalniki_bolniskega_staleza_skalirani)
-}
-
-kmeans_metoda <- function(kazalniki_bolniskega_staleza_normalizirani, stevilo_skupin, nstart) {
-  # kazalniki_bolniskega_staleza_normalizirani predstavlja normalizirane podatke
-  # iz tabele o kazalnikih bolniskega staleza.
-  return (
-    kmeans(kazalniki_bolniskega_staleza_normalizirani, stevilo_skupin, nstart=nstart)
-    )
-}
-
-pridobi_podatke_za_clustering_zemljevid <- function(kmeans_rezultat) {
-  df = data.frame(Regija = dobi_seznam_regij(), Skupina = factor(kmeans_rezultat$cluster))
-  podatki_za_clustering_zemljevid = df %>% 
-    left_join(slo.regije.centroidi, by = "Regija") %>% 
-    left_join(slo.regije.poligoni, by = "Regija")
-  podatki_za_clustering_zemljevid = podatki_za_clustering_zemljevid %>%
-    mutate(
-      Skupina = as.numeric(as.character(podatki_za_clustering_zemljevid$Skupina))
-    )
-  return(podatki_za_clustering_zemljevid)
-}
-
-izrisi_figuro_clusteringa <- function(podatki_za_clustering_zemljevid) {
-  zemljevid = podatki_za_clustering_zemljevid %>% 
-  ggplot() +
-  geom_polygon(
-    mapping = aes(long.y, lat.y, group = group, fill = Skupina),
-    color = "grey"
+g <- lin_regresija_podatki %>%
+  ggplot(
+    aes(x=leto, y=bolniski_stalez_v_dnevih, color=leto, size=2)
   ) +
-  coord_map() +
-  scale_fill_binned() +
-  theme_classic() +
-  theme(
-    axis.line = element_blank(),
-    axis.ticks = element_blank(),
-    axis.text = element_blank(),
-    axis.title = element_blank()
-  )  
-  return (zemljevid)
-}
+  scale_x_continuous(breaks= seq(2011, 2020, by=1)) + 
+  geom_point() +
+  geom_line() + # Razmisli, ce je to potrebno
+  theme(legend.position = "none") +
+  labs(title = "Napovedovanje bolniškega staleža za Gorenjsko po letih") + 
+  xlab("Leto") + 
+  ylab("Bolniški stalež")
 
-clustering_po_bolniskem_stalezu <- function() {
-  
-  # Vrne zemljevid Slovenije, kjer so zgručene posamične regije glede na trajanje
-  # bolniškega staleža od leta 2008 do leta 2012
-  kazalniki_bolniskega_staleza_normalizirani = pripravi_podatke_za_kmeans_analizo(kazalniki_bolniskega_staleza_zenske)
-  kmeans_rezultat = kmeans_metoda(kazalniki_bolniskega_staleza_normalizirani, 3, 1000)
-  podatki_za_clustering_zemljevid = pridobi_podatke_za_clustering_zemljevid(kmeans_rezultat)
-  zemljevid = izrisi_figuro_clusteringa(podatki_za_clustering_zemljevid)
-  return(zemljevid)
-}
+lin <- lm(
+  data=lin_regresija_podatki,
+  bolniski_stalez_v_dnevih ~ leto,
+)
 
-# Končni rezultat clusteringa (zemljevid, ki pogrupira najbolj zdrave regije)
-rezultat_clusteringa <- clustering_po_bolniskem_stalezu()
+napovedi <- predict(lin, data.frame(leto=seq(2010, 2025, 1)))
+
+g +
+  geom_line(
+    data=data.frame(leto=seq(2010, 2025, 1), napovedi = napovedi),
+    aes(
+      x=leto,
+      y=napovedi
+    ),
+    color="grey"
+  )
+
+kv <- lm(data=lin_regresija_podatki, bolniski_stalez_v_dnevih ~ I(leto^2))
+g + geom_smooth(method="lm", formula = y ~ x + I(x^2), color="grey")
+
+z <- lowess(lin_regresija_podatki$leto, lin_regresija_podatki$bolniski_stalez_v_dnevih)
+g + geom_line(data=as.data.frame(z), aes(x=x, y=y), color="grey")
+
+
+mls <- loess(data=lin_regresija_podatki, bolniski_stalez_v_dnevih ~ leto)
+g + geom_smooth(method="loess", color = "grey")
+
+#Ugotovim kateri model ima najmanjšo napako in tega potem izberem.
+which.min(sapply(list(lin, kv, mls), function(x) mean((x$residuals^2))))
+graf8 <- g + geom_smooth(method="loess", formula = y ~ x, color = "#63666A")
+

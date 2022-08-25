@@ -103,9 +103,15 @@ Na zadnjem grafu pri vizualizacijah pa si oglejmo še povprečni bolniški stale
 ## Napredna analiza podatkov
 
 ```{r analiza}
-# source("analiza/analiza.r", encoding="UTF-8")
+source("analiza/analiza.r", encoding="UTF-8")
 ```
 
+Pri napovedovanju podatkov sem začel z linearno regresijo - in sicer sem si izbral Gorenjsko, regijo
+z najnižjim bolniškim staležem ter sem poskušal napovedati bolniški stalež v letih 2021, 2022, 2023, 2024 in 2025.
+
+```{r graf8, echo=FALSE, fig.align='center', fig.width = 12, fig.height =10}
+graf8
+```
 
 
 ***
