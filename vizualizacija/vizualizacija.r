@@ -62,13 +62,16 @@ graf3 <- skupna_tabela %>%
     mapping = aes(
       group = `Oznaka regije`,
       x = `Oznaka regije`,
-      y = bolniski_stalez_v_dnevih,
+      y = stopja_nizke_delovne_intenzivnosti,
     )
   ) + 
   geom_boxplot() +
   xlab("Regija") + 
-  ylab("Bolniški stalež") + 
+  ylab("Stopnja nizke delovne intenzivnosti po regijah") + 
+  ggtitle("Stopnja nizke delovne intenzivnosti") +
   theme_minimal()
+
+
 
 
 
@@ -83,6 +86,13 @@ graf3 <- skupna_tabela %>%
 # tocka-plot
 
 # Tak primer kot ga ima Pavla na grafu 1
+
+skupna_tabela %>%
+  ggplot(
+    mapping = aes(
+      x = 
+    )
+  )
 
 
 

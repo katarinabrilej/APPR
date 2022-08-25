@@ -49,7 +49,9 @@ source("vizualizacija/vizualizacija.r", encoding="UTF-8")
 graf1
 ```
 
-Graf prikazuje, kako se je bolniški stalež po regijah spreminjal med leti 2011 in 2020. Barva nam predstavlja posamično regijo. Opazimo lahko, da so skozi (večinoma) vsa leta najbolj zdravi regiji Osrednjeslovenska (lj) ter Gorenjska (kr), v sredini primorske regije, npr. Goriška (ng) ter Obalno-kraška (kp), na drugem ekstremu pa ležijo vzhodnejše slovenske regije - recimo Koroška (sg), Posavska (kk) ter Pomurska (ms). To bom v nadaljevanju tudi analiziral z metodami gručenja.
+Graf prikazuje, kako se je bolniški stalež po regijah spreminjal med leti 2011 in 2020. Barva nam predstavlja posamično regijo. Opazimo lahko, da so skozi (večinoma) vsa leta najbolj zdravi regiji Osrednjeslovenska (lj) ter Gorenjska (kr), v sredini primorske regije, npr. Goriška (ng) ter Obalno-kraška (kp), na drugem ekstremu pa ležijo vzhodnejše slovenske regije - recimo Koroška (sg), Posavska (kk) ter Pomurska (ms).
+
+Dodatno gre omeniti, da je bolniški stalež večinoma rastel od leta 2011, ko je bila Slovenija v recesiji, do leta 2019, ko je bila Slovenija ekonomsko najmočnejša. Sklepam, da tudi ekonomski faktorji vplivajo na bolniški stalež.
 
 ```{r graf2, echo=FALSE, fig.align='center', fig.width = 12}
 grid.arrange(g_graf21, g_graf22, ncol=1)
@@ -62,7 +64,7 @@ Pri tem grafu se osredotočimo na primerjavo med povprečnim bolniškim staleže
 graf3
 ```
 
-Še en dodaten način, kako lahko primerjamo bolniške staleže med regijami. Opazimo, da v tako kratkem času ne moremo ničesar sklepati o razpršenosti podaktov.
+Ogledal sem si SURS-ov indeks nizke delovne intenzivnosti po regijah. Pri najnižjih so Pomurska (po), Obalno-Kraška (kp), Goriška (ng), Gorenjska (kr) ter Osrednjeslovenska (lj). Omeniti gre, so to (razen Pomurske) regije, ki so prav tako najbolj zdrave (oz. regije z najnižjim bolniškim staležem), kar nakazuje na povezavo bolniškega staleža in delovne intenzivnosti. Na drugem koncu imajo regije Posavska (kk), Koroška (sg), Podravska (mb) ter Zasavska (za) najvišjo stopnje delovne intenzivnosti. iz grafa 2 lahko preberemo, da so to prav tako regije z najvišjim bolniškim staležem.
 
 ```{r, fig.align='center'}
 
