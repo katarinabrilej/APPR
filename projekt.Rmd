@@ -1,6 +1,6 @@
 ---
 title: "Poročilo pri predmetu Analiza podatkov s programom R"
-author: "Študent FMF"
+author: "Val Groleger"
 output:
   html_document: default
   pdf_document:
@@ -20,7 +20,7 @@ source("lib/libraries.r", encoding="UTF-8")
 
 ## Izbira teme
 
-***
+Izbral sem si temo **analiza preseljevanja v Evropi**. Preučeval sem države v katere so se priseljevali in iz katerih so se izseljevali in kaj vpliva na število selitev v posamezni državi. Opazoval sem podatke evropskih držav med leti 2006 in 2019.
 
 ## Obdelava, uvoz in čiščenje podatkov
 
@@ -28,7 +28,14 @@ source("lib/libraries.r", encoding="UTF-8")
 source("uvoz/uvoz.r", encoding="UTF-8")
 ```
 
-***
+Podatke, ki sem jih potreboval za analizo, sem že predstavil v readme datoteki. Pridobil sem jih iz Eurostata in Wikipedije. 
+
+Tabela **migracije** vsebuje podatke o priseljevanju in izseljevanju ljudi za posamezno državo po spolu, BDP na prebivalca za vsako državo ter velikost držav.
+
+Tabela **priseljevanje_2** vsebuje podatke o priseljevanju za posamezno državo po spolu, povprečno število učenih tujih jezikov po stopnjah izobrazbe za opazovane države, število zločinov po skupinah (opazoval sem naklepne umore, posilstva in spolne zlorabe) in stopnjo zaposljivosti mladih, razdeljeno po stopnjah izobrazbe.
+
+Tabela **izseljevanje_2** vsebuje povsem enake podatke kot tabela priseljevanje_2, le da ima namesto podatkov o priseljevanju podatke o izseljevanju.
+
 
 ## Analiza in vizualizacija podatkov
 
@@ -36,7 +43,61 @@ source("uvoz/uvoz.r", encoding="UTF-8")
 source("vizualizacija/vizualizacija.r", encoding="UTF-8")
 ```
 
-***
+```{r graf1, echo=FALSE, fig.align='center', fig.height = 7}
+graf1 
+```
+Graf prikazuje število ljudi, ki se je preselilo v posamezno državo v vsakem od opazovanih let. Vsaka barva predstavlja eno izmed opazovanih držav. Opazimo lahko, da najbolj izstopa Nemčija v letu 2015, kamor se je preselilo več kot 1,5 milijona ljudi. Dodatno lahko opazimo, da imata najvišje priseljevanje poleg Nemčije tudi Španija in Velika Britanija.
+
+```{r graf2, echo=FALSE, fig.align='center', fig.height = 7}
+graf2 
+```
+
+Graf prikazuje število ljudi, ki se je izselilo iz opazovanih držav v vsakem od obravnavanih let. Tako kot na prvem grafu vsaka barva predstavlja eno izmed držav. Vidimo, da so ponovno države, ki prevladujejo v izseljevanju Nemčija, Španija in Velika Britanija.
+
+```{r graf11, echo=FALSE, fig.align='center', fig.height = 7}
+graf11 
+```
+
+Na grafu lahko vidimo razliko med priseljevanje in izseljevanjem za posamezno državo v vsakem opazovanem letu. Očitno je, da se za večino držav ta vrednost giba konstantno okoli nič. Imamo nekaj držav, kjer je v zgolj nekaj letih ta vrednost odstopala od nič, kot sta Irska in Italija. Ponovno izstopajo Nemčija, Španija in Velika Britanija, kjer ta vrednost odstopa od trenda opaženega v drugih državah.
+
+```{r graf3, echo=FALSE, fig.align='center', fig.height = 7}
+graf3 
+```
+Opazujemo graf, ki prikazuje število ljudi, ki se je v letu 2009 priselilo v države. Točke so obravane glede na BDP na prebivalca posamezne države. V tem letu ima najvišji BDP na prebivalca Luxemburg, ki pa ima zelo nizko priseljevanje. Države, ki v letu 2009 prevladujejo v priseljevanju, so Velika Britanija, Španija in Italija, ki imajo BDP na prebivalca primerljiv z ostalimi državami. Med državami, ki imajo zelo nizko priseljevanje, prevladujejo tiste, ki imajo nizek BDP na prebivalca, zato lahko opazimo povezavo med državami z višjim priseljevanjem in višjim BDP na prebivalca.
+
+
+```{r graf12, echo=FALSE, fig.align='center', fig.height = 7}
+graf12 
+```
+
+Graf prikazuje število zločinov v opazovanih državah v letu 2015 ter je obarvan sorazmerno s številom ljudi, ki so se v tem letu izselili iz države. Opazimo, da se je v tem letu največ ljudi izselilo iz Francije, Nemčije in Velike Britanije, ki so ravno ene izmed držav z največjim številom zločinom v opazovanem letu. Kljub temu pa je bilo izseljevanje visoko tudi na Poljskem in v Španiji, kjer pa je bilo število zločinov nizko.
+
+```{r graf16, echo=FALSE, fig.align='center', fig.height = 7, fig.width=9}
+graf16 
+```
+
+Na grafu vidimo število moških, ki se je v letu 2013 preselilo v opazovane države. Države so obarvane skladno s stopnjo zaposljivosti mladih, ki imajo končane vse stopnje izobraževanja. Vidimo, da v število priseljenih moških ponovno prevladujeta Nemčija in Velika Britanija, ki imata tudi visoko stopnjo zaposljivosti mladih. Države, ki v priseljevanju v tem letu sledijo so Francija, Italija, Poljska in Španija, ki imajo vse tudi nižjo stopnjo zaposljivosti mladih. Kljub temu, pa se pojavijo izjeme, kjer je stopnja zaposljivosti mladih visoka, vendar pa je priseljevanje nizko, kot sta na primer Nizozemska in Islandija.
+
+```{r graf21, echo=FALSE, fig.align='center', fig.height = 7}
+graf21 
+```
+
+Točkast graf prikazuje izseljevanje žensk iz opazovanih držav v letu 2008, kjer so točke obravane glede na število obsojenih posilstev v državi v tistem letu. Vidimo, da je število izseljenih žensk v tem letu ponovno najvišje v Nemčiji in Veliki Britaniji, ki imata tudi visoko število obsojenih posilstev. Države, kjer je bilo število obsojenih posilstev manjše, imajo manjše izseljevanje žensk, edina nasprotna primera sta Poljska in Italija. Tako lahko sklepamo, da je lahko to eden izmed razlogov izseljevanja žensk.
+
+```{r graf7, echo=FALSE, fig.align='center', fig.height = 7}
+graf7
+```
+Če si pogledamo graf priseljevanja ljudi v opazovane države, kjer so točke obarvane glede na povprečno število jezikov, ki jih v državi poučujejo na višji drugi stopnji izobraževanja vidimo, da je v državah, kjer povprečno poučujejo okoli 2 tuja jezika, priseljevanje majhno (Romunija, Luksemburg). Vidimo, da v Nemčiji in v Veliki Britaniji, kjer je priseljevanje najvišje, povprečno poučujejo le en tuji jezik. Tako vidimo, da število poučevanih jezikov ne vpliva na število priseljevanja.
+
+```{r zemljevid_priseljevanje, echo=FALSE, fig.align='center', fig.height = 10, fig.width=12}
+zemljevid_priseljevanje
+```
+Na zemljevidu je prikazano skupno priseljevanje v vseh opazovanih letih. Opazimo, da so se ljudje največ selili v Nemčijo, nato sledita Španija in Velika Britanija. Med državami, v katere so se ljudje selili najmanj so Irska, Islandija, Bulgarija in Finska.
+
+```{r zemljevid_izseljevanje, echo=FALSE, fig.align='center', fig.height = 10, fig.width=12}
+zemljevid_izseljevanje
+```
+Na zemljevidu je prikazano skupno izseljevanje v vseh opazovanih letih. Opazimo, da so se ljudje največ selili iz Nemčije, Velike Britanije, Španije in Francije. Med državami, iz katere so se ljudje selili najmanj, so Irska, Islandija, Madžarska in Portugalska.
 
 ## Napredna analiza podatkov
 
@@ -44,7 +105,25 @@ source("vizualizacija/vizualizacija.r", encoding="UTF-8")
 source("analiza/analiza.r", encoding="UTF-8")
 ```
 
-***
+Države sem razdelil v skupine glede na podobnosti v priseljevanje in BDP na prebivalca. Metoda kolen mi je vrnila razdelitev na 2,3,4,5,7,8,10,11,13,15,16,18,21,23,25 oziroma 29 skupin, metoda hierarhičnega razvrščanja pa na 2 skupini (natančneje v datoteki analiza.r)
+
+```{r skupine2, echo=FALSE, fig.align='center', fig.height = 7}
+skupine2
+```
+
+Z napredno analizo sem analiziral podatke o priseljevanju glede na BDP na prebivalca, povprečno število učenih tujih jezikov na višji drugi stopnji izobraževanja, število namernih umorov ter zaposljivost mladih s končanimi vsemi stopnjami izobraževanja. Najprej sem naredil graf z linearno regresijo, kjer vidimo, da je v letu 2019 z višjo stopnjo zaposljivosti mladih priseljevanje padalo, kar je v nasprotju s pričakovanji.
+```{r graf_regresija, echo=FALSE, fig.align='center', fig.height = 7, message = FALSE}
+graf_regresija
+```
+Ugotovil sem, da ima največji vpliv na priseljevanje število namernih umorov, najmanjši pa BDP na prebivalca.
+```{r graf_vpliv, echo=FALSE, fig.align='center', fig.height = 7, message=FALSE}
+graf_vpliv
+```
+
+Nato sem napovedal število priseljevanj v Nemčijo za naslednjih pet let. Dobil sem vrednosti, ki so primerljive s prejšnjimi leti.
+```{r napoved_graf, echo=FALSE, fig.align='center', fig.height = 7, message = FALSE}
+napoved_graf
+```
 
 ```{r shiny}
 #shinyAppDir("shiny", options=list(width="100%", height=600))

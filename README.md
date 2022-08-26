@@ -2,11 +2,40 @@
 
 Vzorčni repozitorij za projekt pri predmetu APPR v študijskem letu 2021/22. 
 
-## Tematika
+## Analiza izseljevanja in priseljevanja v Evropskih državah.
 
-Izbrali si boste temo, s katero se bo vaš projekt ukvarjal.
-Tukaj boste napisali, kje ste dobili podatke, ter kakšen je vaš cilj.
+Analiziral bom gibanje prebivalstva v Evropskih državah v odvisnosti od različnih socialnih, ekonomskih in izobraževalnih vplivov. Analiziral bom posebaj izseljevanje in priseljevanje, ter probal ugotoviti vzroke obeh. Napovedal bom selitvene trende v Evropskih državah v bližnji prihodnosti. Večino podatkov sem dobil na [Eurostatu](https://ec.europa.eu/eurostat/web/main/data/database?p_p_id=NavTreeportletprod_WAR_NavTreeportletprod_INSTANCE_nPqeVbPXRmWQ&p_p_lifecycle=0&p_p_state=normal&p_p_mode=view), razen velikost držav, ki sem dobil na [Wikipediji](https://en.wikipedia.org/wiki/List_of_European_countries_by_area)
+ Za ta namen bom uporabil tri tabele.
+ 
+*1. tabela:* **Migracijski tokovi**
+* države (character)
+* BDP države na prebivalca (double)
+* velikost držav (double)
+* leto (integer)
+* spol (character)
+* izseljevanje (double)
+* priseljevanje (double)
 
+*2. tabela:* **Izseljevanje**
+* država (character)
+* spol (character)
+* leto (integer)
+* stopnja izobrazbe (character)
+* število poučevanih tujih jezikov na učenca (double)
+* zločin (character)
+* število zločinov (double)
+* zaposljivost mladih (double)
+
+*3. tabela:*  **Priseljevanje**
+* država (character)
+* spol (character)
+* leto (integer)
+* stopnja izobrazbe (character)
+* število poučevanih tujih jezikov na učenca (double)
+* zločin (character)
+* število zločinov (integer)
+* zaposljivost mladih (double)
+    
 ## Program
 
 Glavni program in poročilo se nahajata v datoteki `projekt.Rmd`.
